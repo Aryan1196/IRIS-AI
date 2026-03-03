@@ -14,7 +14,6 @@ export default function TerminalOverlay() {
   useEffect(() => {
     if (xtermRef.current) return
 
-    // ⏳ WAIT for DOM Paint
     const initTimer = setTimeout(() => {
       if (!containerRef.current) return
 
@@ -22,10 +21,10 @@ export default function TerminalOverlay() {
 
       const term = new Terminal({
         cursorBlink: true,
-        cursorStyle: 'block', // Retro block cursor
+        cursorStyle: 'block', 
         theme: {
-          background: '#050505', // Deep Black
-          foreground: '#00ff41', // Matrix Green
+          background: '#050505', 
+          foreground: '#00ff41',
           cursor: '#00ff41',
           selectionBackground: 'rgba(0, 255, 65, 0.3)',
           black: '#050505',
@@ -54,7 +53,6 @@ export default function TerminalOverlay() {
         fitAddon.fit()
       } catch (e) {}
 
-      // Startup Message
       term.writeln('\x1b[32m╔════════════════════════════════════════╗\x1b[0m')
       term.writeln('\x1b[32m║  SYSTEM CORE: ONLINE                   ║\x1b[0m')
       term.writeln('\x1b[32m║  PROTOCOL: IRIS_GHOST_SHELL_V2         ║\x1b[0m')
@@ -62,7 +60,6 @@ export default function TerminalOverlay() {
       term.writeln('')
     }, 100)
 
-    // 📡 DATA LISTENER
     const cleanupListener = window.electron.ipcRenderer.on('terminal-data', (_event, data) => {
       setIsVisible(true)
 
@@ -78,7 +75,7 @@ export default function TerminalOverlay() {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
       hideTimerRef.current = setTimeout(() => {
         setIsVisible(false)
-      }, 10000) // Keep visible for 10s
+      }, 10000) 
     })
 
     return () => {
