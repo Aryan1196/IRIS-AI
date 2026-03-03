@@ -1616,10 +1616,8 @@ export class GeminiLiveService {
             } else if (call.name === 'read_notion_reports') {
               result = await runReadNotion()
             } else if (call.name === 'create_widget') {
-              // Automatically import the function at the top of your file
               result = await createWidget(call.args.html_code, call.args.width, call.args.height)
             } else if (call.name === 'close_widgets') {
-              // 🚨 NEW EXECUTION BLOCK
               result = await closeWidgets()
             } else {
               result = 'Error: Tool not found.'
