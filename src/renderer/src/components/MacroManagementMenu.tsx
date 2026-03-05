@@ -1,5 +1,4 @@
-// src/renderer/components/MacroManagementMenu.tsx
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   RiBrainLine,
   RiArrowDropDownLine,
@@ -28,12 +27,10 @@ export default function MacroManagementMenu({ loadMacroToCanvas }: MacroMenuProp
     }
   }
 
-  // Reload when menu opens
   useEffect(() => {
     if (isMainOpen) loadWorkflowsList()
   }, [isMainOpen])
 
-  // Click outside to close
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -64,7 +61,7 @@ export default function MacroManagementMenu({ loadMacroToCanvas }: MacroMenuProp
 
   const handleDuplicate = async (macro: any) => {
     const newMacro = { ...macro, name: `${macro.name} Copy` }
-    loadMacroToCanvas(newMacro) // Duplicate means loading it to canvas to save as new
+    loadMacroToCanvas(newMacro)
     setIsMainOpen(false)
     alert(`Duplicated to canvas as '${newMacro.name}'. Change the name and save to finalize.`)
   }
@@ -109,7 +106,6 @@ export default function MacroManagementMenu({ loadMacroToCanvas }: MacroMenuProp
                 </span>
               </button>
 
-              {/* ACTIONS KEBAB */}
               <button
                 onClick={() =>
                   setActiveWorkflowActions(activeWorkflowActions === macro.name ? null : macro.name)
@@ -119,7 +115,6 @@ export default function MacroManagementMenu({ loadMacroToCanvas }: MacroMenuProp
                 <RiMore2Fill size={16} />
               </button>
 
-              {/* ACTION MENU */}
               {activeWorkflowActions === macro.name && (
                 <div className="absolute top-8 right-2 w-32 bg-black border border-[#27272a] rounded-lg shadow-xl z-20 p-1 flex flex-col animate-in scale-95 fade-in duration-100">
                   {[
