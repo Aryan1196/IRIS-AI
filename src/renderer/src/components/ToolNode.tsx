@@ -1,10 +1,7 @@
-// src/renderer/components/ToolNode.tsx
 import { useState } from 'react'
 import { Handle, Position, useReactFlow } from 'reactflow'
-import { Tooltip } from 'react-tooltip'
 import {
   RiTerminalBoxLine,
-  RiFolderOpenLine,
   RiGlobalLine,
   RiPhoneLine,
   RiSettings4Line,
@@ -46,11 +43,10 @@ export default function ToolNode({ data, id }: any) {
 
   return (
     <div
-      className="bg-[#18181b] border border-[#27272a] rounded-lg shadow-xl min-w-[200px] max-w-[250px] font-sans text-zinc-100 group transition-all hover:border-emerald-500/50 relative"
+      className="bg-[#18181b] border border-[#27272a] rounded-lg shadow-xl min-w-50 max-w-62.5 font-sans text-zinc-100 group transition-all hover:border-emerald-500/50 relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 🚨 LEFT HANDLE (TARGET / INPUT) */}
       {!isTrigger && !isWait && (
         <Handle
           type="target"
@@ -59,7 +55,6 @@ export default function ToolNode({ data, id }: any) {
           className="w-2.5 h-4 bg-zinc-400 rounded-sm border-none -ml-1"
         />
       )}
-      {/* Wait can accept top and left inputs */}
       {isWait && (
         <>
           <Handle
@@ -87,14 +82,13 @@ export default function ToolNode({ data, id }: any) {
               {tool.name.replace(/_/g, ' ')}
             </span>
             {comment && (
-              <span className="text-[9px] text-zinc-500 italic mt-1 truncate max-w-[120px]">
+              <span className="text-[9px] text-zinc-500 italic mt-1 truncate max-w-30">
                 {comment}
               </span>
             )}
           </div>
         </div>
 
-        {/* HOVER ACTIONS - Sleek Edit & Delete */}
         <div
           className={`flex flex-col gap-1 transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
         >
@@ -113,8 +107,6 @@ export default function ToolNode({ data, id }: any) {
         </div>
       </div>
 
-      {/* 🚨 DYNAMIC SOURCE HANDLES (OUTPUTS) */}
-      {/* 🗣️ Voice Trigger only outputs from bottom to start a top-down waterfall flow */}
       {isTrigger && (
         <Handle
           type="source"
@@ -123,7 +115,6 @@ export default function ToolNode({ data, id }: any) {
           className="w-4 h-2.5 bg-emerald-500 rounded-sm border-none -mb-1"
         />
       )}
-      {/* Wait is omnidirectional */}
       {isWait && (
         <>
           <Handle
@@ -140,7 +131,6 @@ export default function ToolNode({ data, id }: any) {
           />
         </>
       )}
-      {/* Standard automation tools flow left-to-right */}
       {!isTrigger && !isWait && (
         <Handle
           type="source"
