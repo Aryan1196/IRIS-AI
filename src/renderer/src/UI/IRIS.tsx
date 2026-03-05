@@ -22,6 +22,7 @@ import DashboardView from '../views/Dashboard'
 import PhoneView from '../views/Phone'
 
 const AppsView = lazy(() => import('../views/APP'))
+const WorkFlowEditorView = lazy(() => import('../views/WorkFlowEditor'))
 const NotesView = lazy(() => import('../views/Notes'))
 const SettingsView = lazy(() => import('../views/Settings'))
 const GalleryView = lazy(() => import('../views/Gallery'))
@@ -89,7 +90,7 @@ const IRIS = (props: IrisProps) => {
         <div className="hidden md:flex gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
           {[
             { id: 'DASHBOARD', icon: <RiLayoutGridLine /> },
-            { id: 'APPS', icon: <RiBrainLine /> },
+            { id: 'Macros', icon: <RiBrainLine /> },
             { id: 'NOTES', icon: <RiFolderOpenLine /> },
             { id: 'GALLERY', icon: <RiImageLine /> },
             { id: 'PHONE', icon: <RiPhoneLine /> },
@@ -137,7 +138,7 @@ const IRIS = (props: IrisProps) => {
         </div>
 
         <Suspense fallback={<ViewSkeleton />}>
-          {activeTab === 'APPS' && <AppsView />}
+          {activeTab === 'Macros' && <WorkFlowEditorView />}
           {activeTab === 'NOTES' && <NotesView glassPanel={glassPanel} />}
           {activeTab === 'SETTINGS' && <SettingsView glassPanel={glassPanel} />}
           {activeTab === 'GALLERY' && <GalleryView />}

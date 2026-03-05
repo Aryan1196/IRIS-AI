@@ -24,6 +24,7 @@ import { runDeepResearch, runReadNotion } from '@renderer/tools/deepSearch-rag'
 import { runIndexDirectory, runSmartSearch } from '@renderer/tools/semantic-search-api'
 import { closeWidgets, createWidget } from '@renderer/tools/widget-creator'
 import { buildAnimatedWebsite } from '@renderer/code/website-builder-api'
+import { getMacroSequence } from '@renderer/code/macro-executor'
 
 const readFile = async (filePath: string) => {
   try {
@@ -1446,6 +1447,18 @@ export class GeminiLiveService {
                     },
                     required: ['prompt']
                   }
+                },
+                {
+                  name: 'execute_macro',
+                  description:
+                    'Triggers a named automation routine. User misspelling of macro names is permitted.',
+                  parameters: {
+                    type: 'OBJECT',
+                    properties: {
+                      macro_name: { type: 'STRING', description: 'The exact name of the macro.' }
+                    },
+                    required: ['macro_name']
+                  }
                 }
               ]
             }
@@ -1638,6 +1651,54 @@ export class GeminiLiveService {
               result = await closeWidgets()
             } else if (call.name === 'build_animated_website') {
               result = await buildAnimatedWebsite(call.args.prompt)
+            } else if (call.name === 'execute_macro') {
+              const macroRes = await getMacroSequence(call.args.macro_name)
+
+              if (!macroRes.success) {
+                result = macroRes.error
+              } else {
+                // 🚨 REAL NATIVE BYPASS: Calling YOUR existing functions!
+                for (const step of macroRes.steps) {
+                  console.log(`[MACRO ENGINE] Executing: ${step.tool}`, step.args)
+
+                  try {
+                    if (step.tool === 'WAIT') {
+                      await new Promise((resolve) =>
+                        setTimeout(resolve, Number(step.args.milliseconds) || 1000)
+                      )
+                    } else if (step.tool === 'set_volume') {
+                      // Calls your existing setVolume function
+                      await setVolume(Number(step.args.level))
+                    } else if (step.tool === 'open_app') {
+                      // Calls your existing openApp function
+                      await openApp(step.args.app_name)
+                    } else if (step.tool === 'send_whatsapp') {
+                      // Calls your existing sendWhatsAppMessage function
+                      await sendWhatsAppMessage(
+                        step.args.name,
+                        step.args.message,
+                        step.args.file_path
+                      )
+                    } else if (step.tool === 'close_app') {
+                      // Calls your existing closeApp function
+                      await closeApp(step.args.app_name)
+                    } else if (step.tool === 'google_search') {
+                      // Calls your existing performWebSearch function
+                      await performWebSearch(step.args.query)
+                    } else if (step.tool === 'run_terminal') {
+                      // Calls your existing runTerminal function
+                      await runTerminal(step.args.command, step.args.path)
+                    } else if (step.tool === 'ghost_type') {
+                      // Calls your existing ghostType function
+                      await ghostType(step.args.text)
+                    }
+                  } catch (stepError) {
+                    console.error(`[MACRO ENGINE] Failed on step ${step.tool}:`, stepError)
+                  }
+                }
+
+                result = `[SYSTEM OVERRIDE] Macro "${macroRes.name}" has been successfully executed natively by the system architecture. Confirm execution with the user briefly.`
+              }
             } else {
               result = 'Error: Tool not found.'
             }
