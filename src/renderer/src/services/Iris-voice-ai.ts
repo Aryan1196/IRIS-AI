@@ -9,6 +9,7 @@ import { getLiveLocation } from '@renderer/tools/live-location'
 import { compareStocks, fetchStockData } from '@renderer/tools/stock-api'
 import {
   closeMobileApp,
+  fetchMobileInfo,
   fetchMobileNotifications,
   openMobileApp,
   pullFileFromMobile,
@@ -25,377 +26,36 @@ import { runIndexDirectory, runSmartSearch } from '@renderer/tools/semantic-sear
 import { closeWidgets, createWidget } from '@renderer/tools/widget-creator'
 import { buildAnimatedWebsite } from '@renderer/code/website-builder-api'
 import { getMacroSequence } from '@renderer/code/macro-executor'
-
-const readFile = async (filePath: string) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('read-file', filePath)
-  } catch (err) {
-    return `Error: ${err}`
-  }
-}
-
-const writeFile = async (fileName: string, content: string) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('write-file', { fileName, content })
-  } catch (err) {
-    return `Error: ${err}`
-  }
-}
-
-const manageFile = async (
-  operation: 'copy' | 'move' | 'delete',
-  sourcePath: string,
-  destPath?: string
-) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('file-ops', { operation, sourcePath, destPath })
-  } catch (err) {
-    return `Error: ${err}`
-  }
-}
-
-const openFile = async (filePath: string) => {
-  try {
-    const result = await window.electron.ipcRenderer.invoke('file:open', filePath)
-    if (result.success) return 'File opened successfully.'
-    return `Error opening file: ${result.error}`
-  } catch (err) {
-    return `System Error: ${err}`
-  }
-}
-
-const readDirectory = async (dirPath: string) => {
-  try {
-    const result = await window.electron.ipcRenderer.invoke('read-directory', dirPath)
-    return result
-  } catch (err) {
-    return `System Error: ${err}`
-  }
-}
-
-const openApp = async (appName: string) => {
-  try {
-    const result: any = await window.electron.ipcRenderer.invoke('open-app', appName)
-    if (result.success) return `Success: ${appName} is opening.`
-    return `Error: ${result.error}`
-  } catch (err) {
-    return `System Error: ${err}`
-  }
-}
-
-const saveNote = async (title: string, content: string) => {
-  try {
-    const result = await window.electron.ipcRenderer.invoke('save-note', { title, content })
-    if (result.success) return `Note saved successfully as ${title}.`
-    return `Failed to save note: ${result.error}`
-  } catch (e) {
-    return 'System Error saving note.'
-  }
-}
-
-const readSystemNotes = async () => {
-  try {
-    const notes: any[] = await window.electron.ipcRenderer.invoke('get-notes')
-    if (!notes || notes.length === 0) return 'Memory Bank is empty. No notes found.'
-
-    return notes
-      .slice(0, 10)
-      .map((n) => `📄 [NOTE: ${n.title}]\n${n.content}`)
-      .join('\n\n')
-  } catch (e) {
-    return 'System Error: Could not access Memory Bank.'
-  }
-}
-
-const performWebSearch = async (query: string) => {
-  await window.electron.ipcRenderer.invoke('google-search', query)
-  return `Opening Google Search for: ${query}`
-}
-
-const closeApp = async (appName: string) => {
-  try {
-    const result: any = await window.electron.ipcRenderer.invoke('close-app', appName)
-    if (result && result.success) return `✅ Terminated ${appName}.`
-    return `⚠️ Failed to close ${appName}. It might not be running or the name is incorrect.`
-  } catch (err) {
-    return 'System Error: Termination failed.'
-  }
-}
-
-const ghostType = async (text: string) => {
-  try {
-    const actions = [{ type: 'type', text: text }]
-    await window.electron.ipcRenderer.invoke('ghost-sequence', actions)
-    return '✅ Typing complete.'
-  } catch (error) {
-    return '❌ Failed to type.'
-  }
-}
-
-const executeGhostSequence = async (jsonString: string) => {
-  try {
-    const actions = JSON.parse(jsonString)
-    await window.electron.ipcRenderer.invoke('ghost-sequence', actions)
-    return '✅ Sequence executed successfully.'
-  } catch (error) {
-    return '❌ Failed to execute sequence. Invalid JSON.'
-  }
-}
-
-const sendWhatsAppMessage = async (name: string, message: string, filePath?: string) => {
-  try {
-    console.log(`🚀 Sending to ${name}`)
-
-    if (filePath) {
-      await window.electron.ipcRenderer.invoke('copy-file-to-clipboard', filePath)
-    }
-
-    await window.electron.ipcRenderer.invoke('open-app', 'whatsapp')
-
-    const navActions = [
-      { type: 'wait', ms: 1500 },
-      { type: 'click' },
-      { type: 'press', key: 'n', modifiers: ['control'] },
-      { type: 'wait', ms: 500 },
-      { type: 'press', key: 'a', modifiers: ['control'] },
-      { type: 'press', key: 'backspace' },
-      { type: 'type', text: name },
-      { type: 'wait', ms: 500 },
-      { type: 'press', key: 'down' },
-      { type: 'press', key: 'enter' },
-      { type: 'wait', ms: 500 },
-      { type: 'click' }
-    ]
-    await window.electron.ipcRenderer.invoke('ghost-sequence', navActions)
-
-    if (filePath) {
-      await window.electron.ipcRenderer.invoke('ghost-sequence', [
-        { type: 'press', key: 'v', modifiers: ['control'] },
-        { type: 'wait', ms: 2500 },
-        { type: 'type', text: message },
-        { type: 'press', key: 'enter' }
-      ])
-    } else {
-      await window.electron.ipcRenderer.invoke('ghost-sequence', [
-        { type: 'paste', text: message },
-        { type: 'wait', ms: 500 },
-        { type: 'press', key: 'enter' }
-      ])
-    }
-
-    return `✅ Message sent to ${name}.`
-  } catch (error) {
-    return '❌ Failed to send.'
-  }
-}
-
-const scheduleWhatsAppMessage = async (
-  name: string,
-  message: string,
-  delayMinutes: number,
-  filePath?: string
-) => {
-  if (!delayMinutes || delayMinutes <= 0) {
-    return await sendWhatsAppMessage(name, message, filePath)
-  }
-
-  console.log(
-    `⏰ Scheduling message for ${name} in ${delayMinutes} mins (File: ${filePath ? 'Yes' : 'No'})`
-  )
-
-  setTimeout(
-    () => {
-      console.log(`⏰ Executing scheduled message for ${name}`)
-      window.electron.ipcRenderer.invoke('ghost-sequence', [{ type: 'type', text: '' }])
-
-      sendWhatsAppMessage(name, message, filePath)
-    },
-    delayMinutes * 60 * 1000
-  )
-
-  return `✅ Scheduled! I will send the message to ${name} in ${delayMinutes} minutes.`
-}
-
-const setVolume = async (level: number) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('set-volume', level)
-  } catch (error) {
-    return '❌ Failed to set volume.'
-  }
-}
-
-const takeScreenshot = async () => {
-  try {
-    return await window.electron.ipcRenderer.invoke('take-screenshot')
-  } catch (error) {
-    return '❌ Failed to capture screen.'
-  }
-}
-
-const getScreenSize = async () => {
-  return await window.electron.ipcRenderer.invoke('get-screen-size')
-}
-
-const clickOnCoordinate = async (x: number, y: number) => {
-  await window.electron.ipcRenderer.invoke('ghost-click-coordinate', { x, y })
-  return `Clicked on (${x}, ${y})`
-}
-
-const scrollScreen = async (direction: 'up' | 'down', amount: number) => {
-  await window.electron.ipcRenderer.invoke('ghost-scroll', { direction, amount })
-  return `Scrolled ${direction}.`
-}
-const pressShortcut = async (key: string, modifiers: string[]) => {
-  await window.electron.ipcRenderer.invoke('ghost-sequence', [{ type: 'press', key, modifiers }])
-  return `Pressed ${modifiers.join('+')}+${key}`
-}
-
-const activateCodingMode = async () => {
-  await window.electron.ipcRenderer.invoke('set-volume', 80)
-
-  await window.electron.ipcRenderer.invoke('open-app', 'vscode')
-
-  await window.electron.ipcRenderer.invoke(
-    'google-search',
-    'https://www.youtube.com/results?search_query=lofi+chill+radio+live'
-  )
-
-  await new Promise((r) => setTimeout(r, 6000))
-
-  try {
-    const screen = await window.electron.ipcRenderer.invoke('get-screen-size')
-
-    const targetX = Math.round(screen.width * 0.35)
-    const targetY = Math.round(screen.height * 0.3)
-
-    console.log(`🎯 Aiming for YouTube Video at (${targetX}, ${targetY})...`)
-
-    await window.electron.ipcRenderer.invoke('ghost-click-coordinate', { x: targetX, y: targetY })
-  } catch (e) {
-    console.error('Screen calculation failed, defaulting to center click.')
-    await window.electron.ipcRenderer.invoke('ghost-sequence', [{ type: 'click' }])
-  }
-
-  return '✅ Coding Mode Active: Volume 80%, VS Code Open, Lofi Playing.'
-}
-
-const runTerminal = async (command: string, path?: string) => {
-  try {
-    const res = await window.electron.ipcRenderer.invoke('run-shell-command', {
-      command,
-      cwd: path
-    })
-    if (res.success) return `✅ Output:\n${res.output}`
-    return `❌ Failed:\n${res.output}`
-  } catch (e) {
-    return 'System Error.'
-  }
-}
-
-const createFolder = async (path: string) => {
-  try {
-    return (await window.electron.ipcRenderer.invoke('create-directory', path)).success
-      ? `✅ Created: ${path}`
-      : '❌ Failed.'
-  } catch (e) {
-    return 'Error'
-  }
-}
-
-const openInVsCode = async (path: string) => {
-  try {
-    return (await window.electron.ipcRenderer.invoke('open-in-vscode', path)).success
-      ? `✅ Opened in VS Code.`
-      : '❌ Failed.'
-  } catch (e) {
-    return 'Error'
-  }
-}
-
-const readGalleryImages = async () => {
-  try {
-    const images: any[] = await window.electron.ipcRenderer.invoke('get-gallery')
-    if (!images || images.length === 0) return 'Visual Vault is empty. No images found.'
-
-    return images
-      .slice(0, 25)
-      .map((img) => `🖼️ Name: "${img.displayName}" | Path: ${img.path}`)
-      .join('\n')
-  } catch (e) {
-    return 'System Error: Could not access Visual Vault.'
-  }
-}
-
-const analyzeDirectPhoto = async (filePath: string, socket: WebSocket | null) => {
-  try {
-    const url = `file:///${filePath.replace(/\\/g, '/')}`
-    const res = await fetch(url)
-    const blob = await res.blob()
-    const reader = new FileReader()
-
-    return new Promise((resolve) => {
-      reader.onloadend = () => {
-        const base64data = (reader.result as string).split(',')[1]
-
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(
-            JSON.stringify({
-              realtimeInput: { mediaChunks: [{ mimeType: 'image/png', data: base64data }] }
-            })
-          )
-          resolve(
-            '✅ Photo successfully injected into your vision. You can now see it. Describe what you see to Harsh.'
-          )
-        } else {
-          resolve('❌ Failed: Connection not open.')
-        }
-      }
-      reader.readAsDataURL(blob)
-    })
-  } catch (e) {
-    return '❌ Error loading direct photo.'
-  }
-}
-
-const readEmails = async (maxResults: number = 5) => {
-  try {
-    const result: any = await window.electron.ipcRenderer.invoke('gmail-read', maxResults)
-
-    const event = new CustomEvent('show-emails', {
-      detail: { emails: result.uiData }
-    })
-    window.dispatchEvent(event)
-
-    return result.speechText
-  } catch (err) {
-    return `System Error: Could not read emails.`
-  }
-}
-
-const sendEmail = async (to: string, subject: string, body: string) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('gmail-send', { to, subject, body })
-  } catch (err) {
-    return `System Error: Could not send email.`
-  }
-}
-
-const draftEmail = async (to: string, subject: string, body: string) => {
-  try {
-    return await window.electron.ipcRenderer.invoke('gmail-draft', { to, subject, body })
-  } catch (err) {
-    return `System Error: Could not draft email.`
-  }
-}
-
-const fetchMobileInfo = async () => {
-  try {
-    const result = await window.electron.ipcRenderer.invoke('get-mobile-info-ai')
-    return result
-  } catch (e) {
-    return 'System Error: Mobile telemetry bridge is offline.'
-  }
-}
+import {
+  createFolder,
+  manageFile,
+  openFile,
+  readDirectory,
+  readFile,
+  writeFile
+} from '@renderer/functions/file-manager-api'
+import { closeApp, openApp, performWebSearch } from '@renderer/functions/apps-manager-api'
+import { readSystemNotes, saveNote } from '@renderer/functions/notes-manager-api'
+import { executeGhostSequence, ghostType } from '@renderer/functions/keyboard-manger-api'
+import {
+  scheduleWhatsAppMessage,
+  sendWhatsAppMessage
+} from '@renderer/functions/whatsapp-manager-api'
+import {
+  clickOnCoordinate,
+  getScreenSize,
+  pressShortcut,
+  scrollScreen,
+  setVolume,
+  takeScreenshot
+} from '@renderer/functions/keybaord-manager'
+import {
+  activateCodingMode,
+  openInVsCode,
+  runTerminal
+} from '@renderer/functions/coding-manager-api'
+import { analyzeDirectPhoto, readGalleryImages } from '@renderer/functions/gallery-managet-api'
+import { draftEmail, readEmails, sendEmail } from '@renderer/functions/gmail-manager-api'
 
 const IRIS_SYSTEM_INSTRUCTION = `
 # 👁️ IRIS — YOUR INTELLIGENT COMPANION (Project JARVIS)
@@ -827,7 +487,6 @@ export class GeminiLiveService {
                     required: ['query']
                   }
                 },
-                // Inside tools: [{ functionDeclarations: [ ... ] }]
                 {
                   name: 'click_on_screen',
                   description:
@@ -1451,7 +1110,7 @@ export class GeminiLiveService {
                 {
                   name: 'execute_macro',
                   description:
-                    'Triggers a named automation routine. User misspelling of macro names is permitted.',
+                    'Triggers a named automation routine. User misspelling of macro/workflow names is permitted.',
                   parameters: {
                     type: 'OBJECT',
                     properties: {
@@ -1669,23 +1328,52 @@ export class GeminiLiveService {
                       await setVolume(Number(step.args.level))
                     } else if (step.tool === 'open_app') {
                       await openApp(step.args.app_name)
+                    } else if (step.tool === 'close_app') {
+                      await closeApp(step.args.app_name)
                     } else if (step.tool === 'send_whatsapp') {
                       await sendWhatsAppMessage(
                         step.args.name,
                         step.args.message,
                         step.args.file_path
                       )
-                    } else if (step.tool === 'close_app') {
-                      await closeApp(step.args.app_name)
+                    } else if (step.tool === 'schedule_whatsapp') {
+                      await scheduleWhatsAppMessage(
+                        step.args.name,
+                        step.args.message,
+                        Number(step.args.delay_minutes),
+                        step.args.file_path
+                      )
                     } else if (step.tool === 'google_search') {
                       await performWebSearch(step.args.query)
                     } else if (step.tool === 'run_terminal') {
                       await runTerminal(step.args.command, step.args.path)
                     } else if (step.tool === 'ghost_type') {
                       await ghostType(step.args.text)
+                    } else if (step.tool === 'send_email') {
+                      await sendEmail(step.args.to, step.args.subject, step.args.body)
+                    } else if (step.tool === 'draft_email') {
+                      await draftEmail(step.args.to, step.args.subject, step.args.body)
+                    } else if (step.tool === 'read_emails') {
+                      await readEmails(Number(step.args.max_results) || 5)
+                    } else if (step.tool === 'deploy_wormhole') {
+                      await window.electron.ipcRenderer.invoke(
+                        'deploy-wormhole',
+                        Number(step.args.port)
+                      )
+                    } else if (step.tool === 'close_wormhole') {
+                      await window.electron.ipcRenderer.invoke('close-wormhole')
+                    } else if (step.tool === 'click_on_screen') {
+                      await clickOnCoordinate(Number(step.args.x), Number(step.args.y))
+                    } else if (step.tool === 'scroll_screen') {
+                      await scrollScreen(step.args.direction, Number(step.args.amount))
+                    } else if (step.tool === 'press_shortcut') {
+                      await pressShortcut(step.args.key, step.args.modifiers)
+                    } else if (step.tool === 'take_screenshot') {
+                      await takeScreenshot()
                     }
                   } catch (stepError) {
                     console.error(`[MACRO ENGINE] Failed on step ${step.tool}:`, stepError)
+                    break
                   }
                 }
 

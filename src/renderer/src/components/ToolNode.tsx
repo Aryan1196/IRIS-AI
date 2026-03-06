@@ -9,7 +9,9 @@ import {
   RiFlashlightLine,
   RiEditBoxLine,
   RiKeyboardLine,
-  RiVolumeUpLine
+  RiVolumeUpLine,
+  RiMailLine,
+  RiServerLine
 } from 'react-icons/ri'
 import 'react-tooltip/dist/react-tooltip.css'
 
@@ -23,6 +25,10 @@ export const getIcon = (name: string, size = 16) => {
   if (name.includes('type') || name.includes('shortcut') || name.includes('sequence'))
     return <RiKeyboardLine size={size} className="text-yellow-400" />
   if (name.includes('volume')) return <RiVolumeUpLine size={size} className="text-pink-400" />
+  // 🚨 NEW: Mail and Wormhole Icons
+  if (name.includes('email')) return <RiMailLine size={size} className="text-orange-400" />
+  if (name.includes('wormhole')) return <RiServerLine size={size} className="text-purple-400" />
+
   if (name === 'TRIGGER_VOICE' || name === 'WAIT')
     return <RiFlashlightLine size={size} className="text-purple-400" />
   return <RiSettings4Line size={size} className="text-zinc-400" />
