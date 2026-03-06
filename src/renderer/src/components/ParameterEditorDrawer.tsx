@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   RiCloseLine,
   RiSave3Line,
@@ -11,10 +11,8 @@ import {
   RiDiscordLine,
   RiGamepadLine
 } from 'react-icons/ri'
-// 🚨 Ensure this path matches your alias setup
 import { getAllApps, AppItem } from '@renderer/services/system-info'
 
-// --- SMART ICON HELPER ---
 const SmartIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
   if (!name) return <div className={`w-8 h-8 bg-zinc-800 rounded-md border border-white/5`} />
 
@@ -58,7 +56,6 @@ const SmartIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
   )
 }
 
-// --- OPTIMIZED APP SELECTOR COMPONENT ---
 const AppSelector = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => {
   const [allApps, setAllApps] = useState<AppItem[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -77,7 +74,6 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
     })
   }, [])
 
-  // 2. Debounce Search Input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedTerm(searchTerm)
@@ -86,7 +82,6 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
     return () => clearTimeout(timer)
   }, [searchTerm])
 
-  // 3. Filter & Sort (🚨 THIS PUSHES THE SELECTED APP TO THE VERY TOP)
   const filteredApps = allApps.filter((app) =>
     app.name.toLowerCase().includes(debouncedTerm.toLowerCase())
   )
@@ -99,7 +94,6 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
 
   const visibleApps = sortedApps.slice(0, page * 20) // Load 20 at a time
 
-  // 4. Infinite Scroll Observer
   const observer = useRef<IntersectionObserver | null>(null)
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
@@ -118,7 +112,6 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
 
   return (
     <div className="flex flex-col gap-2 relative w-full">
-      {/* Search Bar */}
       <div className="relative w-full">
         <RiSearchLine
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500"
@@ -133,8 +126,7 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
         />
       </div>
 
-      {/* App List Container with Increased Height */}
-      <div className="flex flex-col gap-1.5 h-[480px] overflow-y-auto scrollbar-small bg-[#09090b] border border-[#27272a] rounded-md p-1.5 w-full shadow-inner">
+      <div className="flex flex-col gap-1.5 h-120 overflow-y-auto scrollbar-small bg-[#09090b] border border-[#27272a] rounded-md p-1.5 w-full shadow-inner">
         {loading && <p className="text-[10px] text-zinc-500 p-2 text-center">Indexing System...</p>}
         {!loading && visibleApps.length === 0 && (
           <p className="text-[10px] text-zinc-500 p-2 text-center">No apps found.</p>
@@ -183,7 +175,6 @@ const AppSelector = ({ value, onChange }: { value: string; onChange: (val: strin
   )
 }
 
-// --- MAIN DRAWER COMPONENT ---
 export default function ParameterEditorDrawer({ nodeData, updateNodeInputs, closeEditor }: any) {
   const tool = nodeData?.data?.tool
   const [localInputs, setLocalInputs] = useState<any>({})
@@ -222,8 +213,7 @@ export default function ParameterEditorDrawer({ nodeData, updateNodeInputs, clos
         </button>
       </div>
 
-      {/* BODY */}
-      <div className="p-5 flex-grow overflow-y-auto flex flex-col gap-6 custom-scrollbar scrollbar-small">
+      <div className="p-5 grow overflow-y-auto flex flex-col gap-6 custom-scrollbar scrollbar-small">
         <div>
           <h3 className="text-sm font-black text-white uppercase tracking-widest mb-1 flex items-center gap-2">
             {tool.name.replace(/_/g, ' ')}
@@ -246,7 +236,6 @@ export default function ParameterEditorDrawer({ nodeData, updateNodeInputs, clos
 
         <div className="h-px w-full bg-[#27272a]" />
 
-        {/* Dynamic Tool Parameters */}
         <div className="flex flex-col gap-4">
           <h4 className="text-[10px] font-bold tracking-widest text-emerald-500 uppercase">
             Parameters
@@ -259,7 +248,6 @@ export default function ParameterEditorDrawer({ nodeData, updateNodeInputs, clos
                   {key.replace(/_/g, ' ')}
                 </label>
 
-                {/* 🚨 THE MAGIC INJECTION: If it requires an app_name, use the Smart Selector */}
                 {key === 'app_name' && (tool.name === 'open_app' || tool.name === 'close_app') ? (
                   <AppSelector
                     value={localInputs[key] || ''}
@@ -297,7 +285,6 @@ export default function ParameterEditorDrawer({ nodeData, updateNodeInputs, clos
         </div>
       </div>
 
-      {/* FOOTER */}
       <div className="p-4 border-t border-[#27272a] bg-[#18181b]">
         <button
           onClick={handleSave}
