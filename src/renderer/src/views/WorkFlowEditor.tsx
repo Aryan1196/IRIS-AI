@@ -13,11 +13,34 @@ import 'react-tooltip/dist/react-tooltip.css'
 import ToolNode, { getIcon } from '../components/ToolNode'
 import ParameterEditorDrawer from '../components/ParameterEditorDrawer'
 import MacroManagementMenu from '../components/MacroManagementMenu'
-import { RiSave3Line, RiLayoutColumnLine, RiLayoutColumnFill, RiAddLine } from 'react-icons/ri'
+import {
+  RiSave3Line,
+  RiLayoutColumnLine,
+  RiLayoutColumnFill,
+  RiAddLine,
+  RiPlayFill
+} from 'react-icons/ri'
+import { getMacroSequence } from '@renderer/code/macro-executor'
+import {
+  clickOnCoordinate,
+  pressShortcut,
+  scrollScreen,
+  setVolume,
+  takeScreenshot
+} from '@renderer/functions/keybaord-manager'
+import { closeApp, openApp, performWebSearch } from '@renderer/functions/apps-manager-api'
+import {
+  scheduleWhatsAppMessage,
+  sendWhatsAppMessage
+} from '@renderer/functions/whatsapp-manager-api'
+import { runTerminal } from '@renderer/functions/coding-manager-api'
+import { ghostType } from '@renderer/functions/keyboard-manger-api'
+import { draftEmail, readEmails, sendEmail } from '@renderer/functions/gmail-manager-api'
 
+// 🚨 EXPANDED TOOL SCHEMA LIBRARY
 const CATEGORIZED_TOOLS = {
   TRIGGERS: [
-    { name: 'TRIGGER_VOICE', description: 'Starts the workflow.', parameters: {} },
+    { name: 'TRIGGER', description: 'Starts the workflow.', parameters: {} },
     {
       name: 'WAIT',
       description: 'Pauses execution.',
@@ -75,6 +98,45 @@ const CATEGORIZED_TOOLS = {
       name: 'deep_research',
       description: 'AI Web scrape & Notion report.',
       parameters: { properties: { query: { type: 'STRING' } } }
+    },
+    {
+      name: 'deploy_wormhole',
+      description: 'Exposes local server port to the internet.',
+      parameters: { properties: { port: { type: 'NUMBER', description: 'e.g. 3000' } } }
+    },
+    {
+      name: 'close_wormhole',
+      description: 'Closes the public wormhole.',
+      parameters: {}
+    }
+  ],
+  COMMUNICATION: [
+    {
+      name: 'send_email',
+      description: 'Send an email instantly.',
+      parameters: {
+        properties: {
+          to: { type: 'STRING' },
+          subject: { type: 'STRING' },
+          body: { type: 'STRING' }
+        }
+      }
+    },
+    {
+      name: 'read_emails',
+      description: 'Read latest unread emails.',
+      parameters: { properties: { max_results: { type: 'NUMBER', description: 'Default is 5' } } }
+    },
+    {
+      name: 'draft_email',
+      description: 'Create an email draft.',
+      parameters: {
+        properties: {
+          to: { type: 'STRING' },
+          subject: { type: 'STRING' },
+          body: { type: 'STRING' }
+        }
+      }
     }
   ],
   MOBILE_LINK: [
@@ -91,7 +153,25 @@ const CATEGORIZED_TOOLS = {
     {
       name: 'send_whatsapp',
       description: 'Send instant message.',
-      parameters: { properties: { name: { type: 'STRING' }, message: { type: 'STRING' } } }
+      parameters: {
+        properties: {
+          name: { type: 'STRING' },
+          message: { type: 'STRING' },
+          file_path: { type: 'STRING', description: 'Optional' }
+        }
+      }
+    },
+    {
+      name: 'schedule_whatsapp',
+      description: 'Schedule a WhatsApp message.',
+      parameters: {
+        properties: {
+          name: { type: 'STRING' },
+          message: { type: 'STRING' },
+          delay_minutes: { type: 'NUMBER' },
+          file_path: { type: 'STRING', description: 'Optional' }
+        }
+      }
     }
   ]
 }
@@ -102,7 +182,7 @@ const nodeTypes = { customTool: ToolNode }
 function Editor() {
   const [nodes, setNodes] = useState<any[]>([])
   const [edges, setEdges] = useState<any[]>([])
-  const [workflowName, setWorkflowName] = useState('New Jarvis Macro')
+  const [workflowName, setWorkflowName] = useState('New IRIS Macro')
   const [description, setDescription] = useState('Custom Macro')
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [isSaved, setIsSaved] = useState(false)
@@ -112,7 +192,6 @@ function Editor() {
   const openParameterEditor = useCallback((nodeId: string) => setSelectedNodeId(nodeId), [])
 
   const loadMacroToCanvas = (macro: any) => {
-    console.log(isSaved)
     setWorkflowName(macro.name)
     setDescription(macro.description)
 
@@ -130,7 +209,7 @@ function Editor() {
   }
 
   const resetCanvas = () => {
-    setWorkflowName('New Jarvis Macro')
+    setWorkflowName('New IRIS Macro')
     setDescription('Custom Macro')
     setNodes([])
     setEdges([])
@@ -219,7 +298,6 @@ function Editor() {
         edges
       })
       if (res.success) {
-        alert('Neural Pattern Saved Successfully! 🧠')
         setIsSaved(true)
       } else {
         console.error('Backend Save Error:', res.error)
@@ -229,10 +307,87 @@ function Editor() {
     }
   }
 
+  const runMacroManually = async () => {
+    // 1. Force save the current state of the canvas
+    await saveWorkflow()
+    console.log(`🚀 IGNITING MANUAL EXECUTION: ${workflowName}`)
+
+    // 2. Parse the saved neural pattern
+    const macroRes = await getMacroSequence(workflowName)
+
+    if (!macroRes.success) {
+      alert(`❌ Execution Failed: ${macroRes.error}`)
+      return
+    }
+
+    // 3. Pure IF/ELSE Execution Engine
+    for (const step of macroRes.steps) {
+      console.log(`[MACRO ENGINE] Executing step: ${step.tool}`, step.args)
+
+      try {
+        if (step.tool === 'WAIT') {
+          await new Promise((resolve) =>
+            setTimeout(resolve, Number(step.args.milliseconds) || 1000)
+          )
+        } else if (step.tool === 'set_volume') {
+          await setVolume(Number(step.args.level))
+        } else if (step.tool === 'open_app') {
+          await openApp(step.args.app_name)
+        } else if (step.tool === 'close_app') {
+          await closeApp(step.args.app_name)
+        } else if (step.tool === 'send_whatsapp') {
+          await sendWhatsAppMessage(step.args.name, step.args.message, step.args.file_path)
+        } else if (step.tool === 'schedule_whatsapp') {
+          await scheduleWhatsAppMessage(
+            step.args.name,
+            step.args.message,
+            Number(step.args.delay_minutes),
+            step.args.file_path
+          )
+        } else if (step.tool === 'google_search') {
+          await performWebSearch(step.args.query)
+        } else if (step.tool === 'run_terminal') {
+          await runTerminal(step.args.command, step.args.path)
+        } else if (step.tool === 'ghost_type') {
+          await ghostType(step.args.text)
+        } else if (step.tool === 'send_email') {
+          await sendEmail(step.args.to, step.args.subject, step.args.body)
+        } else if (step.tool === 'draft_email') {
+          await draftEmail(step.args.to, step.args.subject, step.args.body)
+        } else if (step.tool === 'read_emails') {
+          await readEmails(Number(step.args.max_results) || 5)
+        } else if (step.tool === 'deploy_wormhole') {
+          await (window as any).electron.ipcRenderer.invoke(
+            'deploy-wormhole',
+            Number(step.args.port)
+          )
+        } else if (step.tool === 'close_wormhole') {
+          await (window as any).electron.ipcRenderer.invoke('close-wormhole')
+        } else if (step.tool === 'click_on_screen') {
+          await clickOnCoordinate(Number(step.args.x), Number(step.args.y))
+        } else if (step.tool === 'scroll_screen') {
+          await scrollScreen(step.args.direction, Number(step.args.amount))
+        } else if (step.tool === 'press_shortcut') {
+          await pressShortcut(step.args.key, step.args.modifiers)
+        } else if (step.tool === 'take_screenshot') {
+          await takeScreenshot()
+        } else {
+          console.warn(`[MACRO ENGINE] ⚠️ Unknown tool: ${step.tool}`)
+        }
+      } catch (stepError) {
+        console.error(`[MACRO ENGINE] 🔴 Crash on node [${step.tool}]:`, stepError)
+        alert(`🔴 Macro Execution Halted! Failed at node: ${step.tool}`)
+        break // 🚨 Stop the sequence immediately if a node fails
+      }
+    }
+
+    console.log(`✅ MACRO "${macroRes.name}" COMPLETED SUCCESSFULLY.`)
+  }
+
   return (
     <div className="flex h-full w-full bg-[#09090b] relative overflow-hidden">
       <div
-        className={`fixed top-14 left-0 h-[calc(100vh-56px)] bg-[#111113] border-r border-[#27272a] p-4 flex flex-col gap-1 transition-all duration-300 ease-in-out z-40 scrollbar-small ${isSidebarOpen ? 'w-72 opacity-100' : 'w-0 opacity-0'}`}
+        className={`fixed top-14 left-0 h-[calc(100vh-56px)] bg-[#111113] border-r border-[#27272a] p-4 flex flex-col gap-1 transition-all duration-300 ease-in-out z-40 scrollbar-small overflow-auto mt-5 ${isSidebarOpen ? 'w-72 opacity-100' : 'w-0 opacity-0'}`}
       >
         {isSidebarOpen && (
           <>
@@ -246,7 +401,7 @@ function Editor() {
                   {category}
                 </h3>
                 <div className="flex flex-col gap-2">
-                  {tools.map((tool) => (
+                  {tools.map((tool: any) => (
                     <div
                       key={tool.name}
                       className="flex items-center gap-3 p-2 bg-[#18181b] border border-[#27272a] rounded-lg cursor-grab hover:border-emerald-500/50 hover:bg-[#27272a]/50 transition-all group"
@@ -302,11 +457,20 @@ function Editor() {
             onChange={(e) => setWorkflowName(e.target.value)}
             className="bg-[#18181b] border border-[#27272a] px-4 py-2 rounded-lg text-sm text-white outline-none focus:border-emerald-500 font-bold tracking-wide w-64 shadow-inner"
           />
+
+          {/* 🚨 NEW: MANUAL RUN BUTTON */}
+          <button
+            onClick={runMacroManually}
+            className="bg-[#18181b] hover:bg-[#27272a] text-emerald-400 px-5 py-2 rounded-lg text-[11px] font-black tracking-widest transition-all border border-[#27272a] hover:border-emerald-500/50 flex items-center gap-2 cursor-pointer shadow-lg"
+          >
+            <RiPlayFill size={16} /> RUN
+          </button>
+
           <button
             onClick={saveWorkflow}
             className="bg-emerald-600 hover:bg-emerald-500 text-black px-6 py-2 rounded-lg text-[11px] font-black tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2 cursor-pointer"
           >
-            <RiSave3Line size={16} /> SAVE MACRO
+            <RiSave3Line size={16} /> SAVE
           </button>
         </div>
 
