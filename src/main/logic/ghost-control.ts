@@ -60,13 +60,12 @@ const KEY_MAP: Record<string, Key> = {
 }
 
 function generateHumanPath(start: Point, end: Point): Point[] {
-  const steps = 25 // Lower = Faster, Higher = Smoother
+  const steps = 25 
   const pathArray: Point[] = []
 
-  // Add randomness to the curve
   const directionX = end.x > start.x ? 1 : -1
   const directionY = end.y > start.y ? 1 : -1
-  const deviation = Math.random() * 80 + 20 // 20-100px curve
+  const deviation = Math.random() * 80 + 20 
 
   const controlPoint = new Point(
     start.x +
@@ -87,7 +86,6 @@ function generateHumanPath(start: Point, end: Point): Point[] {
 }
 
 export default function registerGhostControl(ipcMain: IpcMain) {
-  // ⚡ 1. HANDLE FILE COPYING
   ipcMain.handle('copy-file-to-clipboard', async (_event, filePath: string) => {
     return new Promise((resolve) => {
       const cmd = `powershell -command "Set-Clipboard -Path '${filePath}'"`
@@ -141,7 +139,7 @@ export default function registerGhostControl(ipcMain: IpcMain) {
   ipcMain.handle('ghost-click-coordinate', async (_event, { x, y, doubleClick }) => {
     try {
       const primaryDisplay = screen.getPrimaryDisplay()
-      const scaleFactor = primaryDisplay.scaleFactor // e.g., 1.25 or 1.5
+      const scaleFactor = primaryDisplay.scaleFactor
 
       const logicalX = Math.round(x / scaleFactor)
       const logicalY = Math.round(y / scaleFactor)
