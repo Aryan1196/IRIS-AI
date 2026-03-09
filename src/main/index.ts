@@ -40,6 +40,7 @@ import registerWidgetMaker from './auto/widget-manager'
 import registerWebsiteBuilder from './auto/website-builder'
 import registerWorkflowManager from './workflow/workflow-manager'
 import registerDropZoneControl from './handlers/SmartDropZone-Handler'
+import registerScreenPeeler from './handlers/ScreenPeeler-handle'
 
 let mainWindow: BrowserWindow | null = null
 let isOverlayMode = false
@@ -131,6 +132,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  registerScreenPeeler()
   registerDropZoneControl(ipcMain)
   registerWorkflowManager()
   registerWebsiteBuilder()
