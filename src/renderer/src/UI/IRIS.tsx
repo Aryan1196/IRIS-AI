@@ -140,7 +140,9 @@ const IRIS = (props: IrisProps) => {
         <Suspense fallback={<ViewSkeleton />}>
           {activeTab === 'Macros' && <WorkFlowEditorView />}
           {activeTab === 'NOTES' && <NotesView glassPanel={glassPanel} />}
-          {activeTab === 'SETTINGS' && <SettingsView glassPanel={glassPanel} />}
+          {activeTab === 'SETTINGS' && (
+            <SettingsView glassPanel={glassPanel} isSystemActive={props.isSystemActive} />
+          )}
           {activeTab === 'GALLERY' && <GalleryView />}
         </Suspense>
       </div>
