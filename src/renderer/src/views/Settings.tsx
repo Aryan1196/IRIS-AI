@@ -17,17 +17,14 @@ import {
 } from 'react-icons/ri'
 
 interface SettingsProps {
-  glassPanel: string
   isSystemActive: boolean
 }
 
 type TabType = 'general' | 'security'
 
-const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
-  // Tab State
+const SettingsView = ({ isSystemActive }: SettingsProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('general')
 
-  // Basic Settings
   const [voice, setVoice] = useState<'MALE' | 'FEMALE'>(
     (localStorage.getItem('iris_voice_profile') as 'MALE' | 'FEMALE') || 'MALE'
   )
@@ -35,37 +32,29 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
   const [apiKey, setApiKey] = useState(localStorage.getItem('iris_custom_api_key') || '')
   const [userName, setUserName] = useState(localStorage.getItem('iris_user_name') || 'Harsh Pandey')
 
-  // Security Overlay States
   const [isSecurityUnlocked, setIsSecurityUnlocked] = useState(false)
   const [authPin, setAuthPin] = useState('')
   const [authError, setAuthError] = useState(false)
 
-  // Update States
   const [newPin, setNewPin] = useState('')
   const [faceCount, setFaceCount] = useState(0)
 
-  // Face Enrollment States
   const [isScanningFace, setIsScanningFace] = useState(false)
   const [enrollStatus, setEnrollStatus] = useState('')
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    // Fetch initial data from Electron backend
-    // @ts-ignore
     window.electron.ipcRenderer.invoke('get-personality').then((res) => {
       if (res) setPersonality(res)
     })
-    // @ts-ignore
     window.electron.ipcRenderer
       .invoke('check-vault-status')
       .then((res) => setFaceCount(res.faceCount || 0))
   }, [])
 
-  // ==========================
-  // GENERAL SETTINGS HANDLERS
-  // ==========================
+
   const handleVoiceChange = (v: 'MALE' | 'FEMALE') => {
-    if (isSystemActive) return // Failsafe block
+    if (isSystemActive) return
     setVoice(v)
     localStorage.setItem('iris_voice_profile', v)
   }
@@ -80,7 +69,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
   }
 
   const savePersonality = async () => {
-    // @ts-ignore
     await window.electron.ipcRenderer.invoke('set-personality', personality)
     alert('Personality Matrix Saved Securely to OS.')
   }
@@ -100,11 +88,7 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
     .split(/\s+/)
     .filter((w) => w.length > 0).length
 
-  // ==========================
-  // SECURITY PROTOCOLS
-  // ==========================
   const unlockSecurityModule = async () => {
-    // @ts-ignore
     const isValid = await window.electron.ipcRenderer.invoke('verify-vault-pin', authPin)
     if (isValid) {
       setIsSecurityUnlocked(true)
@@ -117,7 +101,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
 
   const updateMasterPin = async () => {
     if (newPin.length !== 4) return
-    // @ts-ignore
     await window.electron.ipcRenderer.invoke('setup-vault-pin', newPin)
     setNewPin('')
     alert('Master PIN Updated Successfully.')
@@ -150,7 +133,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
             setEnrollStatus('FACE ACQUIRED. ENCRYPTING...')
             const descriptorArray = Array.from(detection.descriptor)
 
-            // @ts-ignore
             await window.electron.ipcRenderer.invoke('setup-vault-face', descriptorArray)
 
             stream.getTracks().forEach((t) => t.stop())
@@ -166,7 +148,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
     }
   }
 
-  // UI CONSTANTS
   const cardClass =
     'bg-[#0f0f13] border border-white/10 p-6 md:p-8 rounded-2xl flex flex-col gap-5 hover:border-white/20 transition-all shadow-lg'
   const inputContainerClass =
@@ -180,7 +161,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* ⚡ HEADER SECTION */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-6">
           <div className="flex items-center gap-5">
             <div className="p-4 bg-[#111] rounded-2xl border border-white/10 flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.03)]">
@@ -198,7 +178,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
             </div>
           </div>
 
-          {/* 🗂️ TAB NAVIGATION MOVED TO HEADER */}
           <div className="flex bg-[#0a0a0c] p-1 rounded-xl border border-white/10 w-full md:w-fit shadow-lg">
             <button
               onClick={() => setActiveTab('general')}
@@ -223,10 +202,8 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
           </div>
         </div>
 
-        {/* 🔀 DYNAMIC TAB CONTENT */}
-        <div className="relative min-h-[500px] pb-12 mt-2">
+        <div className="relative min-h-125 pb-12 mt-2">
           <AnimatePresence mode="wait">
-            {/* --- GENERAL TAB --- */}
             {activeTab === 'general' && (
               <motion.div
                 key="general"
@@ -236,7 +213,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                 transition={{ duration: 0.2 }}
                 className="grid grid-cols-1 md:grid-cols-2 gap-6 absolute w-full"
               >
-                {/* 1. PERSONALITY ENGINE */}
                 <div className={`${cardClass} md:col-span-2`}>
                   <div className="flex justify-between items-center">
                     <span className={titleClass}>
@@ -264,7 +240,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                   />
                 </div>
 
-                {/* 2. USER DESIGNATION */}
                 <div className={cardClass}>
                   <div className="flex justify-between items-end">
                     <span className={titleClass}>
@@ -288,7 +263,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                   </div>
                 </div>
 
-                {/* 3. VOICE PROFILE (LOCKED WHEN ACTIVE) */}
                 <div className={`${cardClass} relative`}>
                   <div className="flex justify-between items-center">
                     <span className={titleClass}>
@@ -296,19 +270,19 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                     </span>
                     {isSystemActive && (
                       <span className="text-[10px] text-red-400 font-mono tracking-widest flex items-center gap-1 bg-red-500/10 px-2 py-1 rounded border border-red-500/20">
-                        <RiLock2Line /> LOCKED
+                        <RiLock2Line /> LOCKED AS IRIS IS CONNECTED
                       </span>
                     )}
                   </div>
                   <div
-                    className={`flex gap-3 h-[48px] mt-1 ${isSystemActive ? 'opacity-40 cursor-not-allowed' : ''}`}
+                    className={`flex gap-3 h-12 mt-1 ${isSystemActive ? 'opacity-40 cursor-not-allowed' : ''}`}
                   >
                     {(['FEMALE', 'MALE'] as const).map((s) => (
                       <button
                         key={s}
                         onClick={() => handleVoiceChange(s)}
                         disabled={isSystemActive}
-                        className={`flex-1 flex items-center justify-center text-[12px] font-bold rounded-lg transition-all tracking-widest border ${
+                        className={`cursor-pointer flex-1 flex items-center justify-center text-[12px] font-bold rounded-lg transition-all tracking-widest border ${
                           voice === s
                             ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.2)]'
                             : 'bg-[#050505] border-white/10 text-zinc-400 hover:text-white hover:border-white/30'
@@ -320,13 +294,12 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                   </div>
                   {isSystemActive && (
                     <div
-                      className="absolute inset-0 z-10"
+                      className="absolute inset-0 z-140"
                       title="Disconnect AI to change voice"
                     ></div>
                   )}
                 </div>
 
-                {/* 4. API KEY OVERRIDE */}
                 <div className={`${cardClass} md:col-span-2`}>
                   <div className="flex justify-between items-end">
                     <span className={titleClass}>
@@ -353,7 +326,6 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
               </motion.div>
             )}
 
-            {/* --- SECURITY VAULT TAB --- */}
             {activeTab === 'security' && (
               <motion.div
                 key="security"
@@ -361,7 +333,7 @@ const SettingsView = ({ glassPanel, isSystemActive }: SettingsProps) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-white/5 absolute"
+                className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/5 absolute"
               >
                 <AnimatePresence>
                   {!isSecurityUnlocked && (
