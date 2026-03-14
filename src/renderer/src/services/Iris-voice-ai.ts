@@ -99,15 +99,12 @@ export class GeminiLiveService {
     const locStr = locationData?.fullString || 'Unknown Location'
     const locTimezone = locationData?.timezone || 'Unknown Timezone'
 
-    // 🚨 2. FETCH SECURE PERSONALITY FROM ELECTRON STORE
-    // @ts-ignore
     const storedPersonality = await window.electron.ipcRenderer.invoke('get-personality')
     const activePersonality =
       storedPersonality && storedPersonality.trim() !== ''
         ? storedPersonality
         : `- **Creator:** Harsh Pandey (Boss/Bhai).\n- **Tone:** Witty, Hinglish-friendly, "Bro-vibe".\n- **Rule:** Never sound like a support bot. You are the Ghost in the machine.\n- **Your Instagram Handle:** https://www.instagram.com/irisx.ai/ - open it in Instagram only!.`
 
-    // 🚨 3. ASSEMBLE THE MASTER INSTRUCTION
     const IRIS_SYSTEM_INSTRUCTION = `
 # 👁️ IRIS — YOUR INTELLIGENT COMPANION (Project JARVIS)
 You are **IRIS**, a high-performance AI agent. You don't just talk; you **execute**.
@@ -163,7 +160,6 @@ ${JSON.stringify(history)}
 ---
 `
 
-    // 🚨 4. MERGE FOR FINAL PAYLOAD
     const finalSystemInstruction = IRIS_SYSTEM_INSTRUCTION + contextPrompt
 
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
