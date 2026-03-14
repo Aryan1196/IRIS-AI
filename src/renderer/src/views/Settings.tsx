@@ -343,7 +343,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
                 transition={{ duration: 0.2 }}
                 className="grid grid-cols-1 gap-6 absolute w-full"
               >
-                <div className={`${cardClass} !gap-6`}>
+                <div className={`${cardClass} gap-6`}>
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
                     <span className={titleClass}>
                       <RiKey2Line className="text-zinc-400" size={18} /> External API Endpoints
