@@ -14,6 +14,7 @@ import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+// --- IPC HANDLER IMPORTS ---
 import registerIpcHandlers from './logic/iris-memory-save'
 import registerSystemHandlers from './logic/get-system-info'
 import registerFileSearch from './logic/file-search'
@@ -50,6 +51,7 @@ import registerLockSystem from './security/lock-system'
 
 app.commandLine.appendSwitch('use-fake-ui-for-media-stream')
 
+// --- DEEP LINKING SETUP ---
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
     app.setAsDefaultProtocolClient('iris', process.execPath, [path.resolve(process.argv[1])])
@@ -58,6 +60,7 @@ if (process.defaultApp) {
   app.setAsDefaultProtocolClient('iris')
 }
 
+// Ensure only one instance of the app runs (required for deep linking)
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
@@ -66,6 +69,7 @@ if (!gotTheLock) {
 let mainWindow: BrowserWindow | null = null
 let isOverlayMode = false
 
+// Secure Vault Path
 const secureConfigPath = join(app.getPath('userData'), 'iris_secure_vault.json')
 
 function createWindow(): void {
@@ -82,7 +86,7 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       backgroundThrottling: false,
-      webSecurity: false
+      webSecurity: false // Consider securing this in a production release
     }
   })
 
@@ -109,12 +113,14 @@ function createWindow(): void {
   }
 }
 
+// --- HANDLE DEEP LINKS (Windows / Linux) ---
 app.on('second-instance', (event, commandLine) => {
   if (mainWindow) {
     if (mainWindow.isMinimized()) mainWindow.restore()
     mainWindow.focus()
-    const url = commandLine.pop()
-    if (url && url.startsWith('iris://')) {
+    // Extract the deep link URL from the command line arguments
+    const url = commandLine.find((arg) => arg.startsWith('iris://'))
+    if (url) {
       mainWindow.webContents.send('oauth-callback', url)
     }
   }
@@ -151,6 +157,7 @@ function toggleOverlayMode() {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
+  // --- SECURE KEY IPC HANDLERS ---
   ipcMain.handle('secure-save-keys', async (_, { groqKey, geminiKey }) => {
     if (!safeStorage.isEncryptionAvailable()) {
       throw new Error('OS encryption not available on this system.')
@@ -181,6 +188,7 @@ app.whenReady().then(() => {
     return fs.existsSync(secureConfigPath)
   })
 
+  // Strip CORS headers to allow WebRTC/API bypass
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const responseHeaders = { ...details.responseHeaders }
     delete responseHeaders['content-security-policy']
@@ -197,6 +205,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // --- HANDLE DEEP LINKS (macOS) ---
   app.on('open-url', (event, url) => {
     event.preventDefault()
     if (mainWindow && url.startsWith('iris://')) {
@@ -204,6 +213,7 @@ app.whenReady().then(() => {
     }
   })
 
+  // --- REGISTER SYSTEM LOGIC ---
   registerLockSystem()
   registerSecurityVault()
   registerPhantomKeyboard()
