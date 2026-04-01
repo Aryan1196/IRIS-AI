@@ -77,7 +77,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
         setStatus('authorized')
       } catch (error) {
         console.error('Security Check Failed:', error)
-        logout() // Clear zustand/localStorage
+        logout() 
         navigate('/login', { replace: true })
       }
     }
@@ -114,7 +114,7 @@ const AppRouter = () => {
           if (token) {
             useAuthStore.getState().setAccessToken(token)
             localStorage.setItem('iris_cloud_token', token)
-            navigate('/') // Send them to the gatekeeper to get sorted
+            navigate('/')
           }
         } catch (e) {
           console.error('Failed to parse OAuth URL', e)
