@@ -61,6 +61,8 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
         const userRes = await AxiosInstance.get('/users/me')
         if (userRes.status !== 200) throw new Error('Cloud Auth Failed')
 
+          console.log(userRes)
+
         if (electronAPI) {
           const keysExist = await electronAPI.invoke('check-keys-exist')
           if (!keysExist) {
