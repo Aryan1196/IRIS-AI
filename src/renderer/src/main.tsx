@@ -77,7 +77,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
         setStatus('authorized')
       } catch (error) {
         console.error('Security Check Failed:', error)
-        logout() // Clear zustand/localStorage
+        logout()
         navigate('/login', { replace: true })
       }
     }
@@ -114,9 +114,14 @@ const AppRouter = () => {
           const refreshToken = urlObj.searchParams.get('refreshToken')
           const accessToken = urlObj.searchParams.get('accessToken')
 
-          if (refreshToken) {
+          if (refreshToken && accessToken) {
+            // 1. Save refresh token to local storage for long-term sessions
             localStorage.setItem('iris_cloud_token', refreshToken)
 
+            // 2. Inject access token into Zustand store for immediate API calls
+            useAuthStore.getState().setAccessToken(accessToken)
+
+            // 3. Trigger the ProtectedRoute check
             navigate('/')
           }
         } catch (e) {
@@ -147,7 +152,7 @@ const AppRouter = () => {
             <LockScreen
               onUnlock={() => {
                 isSessionUnlocked = true
-                navigate('/') 
+                navigate('/')
               }}
             />
           </ProtectedRoute>
