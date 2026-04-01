@@ -6,11 +6,15 @@ import {
   desktopCapturer,
   globalShortcut,
   screen,
-  session
+  session,
+  safeStorage
 } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
+import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+// --- YOUR EXISTING IMPORTS ---
 import registerIpcHandlers from './logic/iris-memory-save'
 import registerSystemHandlers from './logic/get-system-info'
 import registerFileSearch from './logic/file-search'
@@ -47,8 +51,27 @@ import registerLockSystem from './security/lock-system'
 
 app.commandLine.appendSwitch('use-fake-ui-for-media-stream')
 
+// --- REGISTER DEEP LINK PROTOCOL ---
+// This allows Google OAuth to redirect to iris://
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('iris', process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient('iris')
+}
+
+// Force Single Instance Lock for Deep Linking
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+}
+
 let mainWindow: BrowserWindow | null = null
 let isOverlayMode = false
+
+// --- SECURE KEY STORAGE PATH ---
+const secureConfigPath = join(app.getPath('userData'), 'iris_secure_vault.json')
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -91,6 +114,19 @@ function createWindow(): void {
   }
 }
 
+// --- HANDLE DEEP LINKS (WINDOWS/LINUX) ---
+app.on('second-instance', (event, commandLine) => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+    // Extract the URL from command line
+    const url = commandLine.pop()
+    if (url && url.startsWith('iris://')) {
+      mainWindow.webContents.send('oauth-callback', url)
+    }
+  }
+})
+
 function toggleOverlayMode() {
   if (!mainWindow) return
 
@@ -122,6 +158,38 @@ function toggleOverlayMode() {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
+  // --- SECURE KEY IPC HANDLERS ---
+  ipcMain.handle('secure-save-keys', async (_, { groqKey, geminiKey }) => {
+    if (!safeStorage.isEncryptionAvailable()) {
+      throw new Error('OS encryption not available on this system.')
+    }
+    const secureData = {
+      groq: safeStorage.encryptString(groqKey).toString('base64'),
+      gemini: safeStorage.encryptString(geminiKey).toString('base64')
+    }
+    fs.writeFileSync(secureConfigPath, JSON.stringify(secureData))
+    return { success: true }
+  })
+
+  ipcMain.handle('secure-get-keys', async () => {
+    if (!fs.existsSync(secureConfigPath)) return null
+    try {
+      const data = JSON.parse(fs.readFileSync(secureConfigPath, 'utf8'))
+      return {
+        groqKey: safeStorage.decryptString(Buffer.from(data.groq, 'base64')),
+        geminiKey: safeStorage.decryptString(Buffer.from(data.gemini, 'base64'))
+      }
+    } catch (err) {
+      console.error('Failed to decrypt keys', err)
+      return null
+    }
+  })
+
+  ipcMain.handle('check-keys-exist', () => {
+    return fs.existsSync(secureConfigPath)
+  })
+  // --------------------------------
+
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const responseHeaders = { ...details.responseHeaders }
     delete responseHeaders['content-security-policy']
@@ -138,6 +206,15 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // --- HANDLE DEEP LINKS (MACOS) ---
+  app.on('open-url', (event, url) => {
+    event.preventDefault()
+    if (mainWindow && url.startsWith('iris://')) {
+      mainWindow.webContents.send('oauth-callback', url)
+    }
+  })
+
+  // --- YOUR REGISTRATIONS ---
   registerLockSystem()
   registerSecurityVault()
   registerPhantomKeyboard()
