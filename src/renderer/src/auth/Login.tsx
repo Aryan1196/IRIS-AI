@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Cpu, Sparkles, ShieldCheck } from 'lucide-react'
+import { Cpu, ShieldCheck } from 'lucide-react'
 import { FcGoogle } from 'react-icons/fc'
 
 export default function LoginPage() {
