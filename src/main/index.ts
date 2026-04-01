@@ -111,6 +111,7 @@ function createWindow(): void {
 }
 
 app.on('second-instance', (event, commandLine) => {
+  if (!event) return
   if (mainWindow) {
     if (mainWindow.isMinimized()) mainWindow.restore()
     mainWindow.focus()
