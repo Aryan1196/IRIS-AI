@@ -20,7 +20,6 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
     email: '',
     password: ''
   })
-  
 
   const setAccessToken = useAuthStore.getState().setAccessToken
 
@@ -33,7 +32,7 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
 
   const handleGoogleLogin = () => {
     // Opens the Google Auth route in your cloud backend
-    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/users/google`
+    window.location.href = `${process.env.VITE_BACKEND_KEY}/users/google`
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

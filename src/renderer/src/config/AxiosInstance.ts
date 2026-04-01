@@ -10,7 +10,7 @@ type QueueItem = {
 };
 
 const AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
+  baseURL: process.env.VITE_BACKEND_KEY,
   withCredentials: true,
 });
 AxiosInstance.interceptors.request.use((config) => {
