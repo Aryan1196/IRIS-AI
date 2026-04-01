@@ -76,18 +76,6 @@ export default function LoginPage() {
             </button>
           </div>
         </motion.div>
-
-        <motion.div variants={itemVariants} className="text-center mt-8">
-          <p className="text-gray-400 text-sm">
-            Don't have an access key?{' '}
-            <button
-              onClick={() => window.open(`${import.meta.env.VITE_FRONTEND_KEY}/signup`, '_blank')}
-              className="text-[#10b981] font-semibold hover:text-emerald-400 transition-colors flex items-center justify-center gap-1 cursor-pointer bg-transparent border-none p-0"
-            >
-              Deploy Engine <Sparkles className="w-3 h-3" />
-            </button>
-          </p>
-        </motion.div>
       </motion.div>
     </div>
   )
