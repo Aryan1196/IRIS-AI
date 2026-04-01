@@ -29,7 +29,7 @@ class SystemErrorBoundary extends React.Component<
           <p className="text-sm text-red-400 mb-2">
             React Render Tree Crashed. Check DevTools (Ctrl+Shift+I).
           </p>
-          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-300 max-w-2xl break-words">
+          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-300 max-w-2xl wrap-break-word">
             {this.state.errorMsg}
           </div>
         </div>
