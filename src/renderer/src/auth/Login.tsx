@@ -8,6 +8,7 @@ interface LoginProps {
   onNavigate?: (view: 'signup') => void
 }
 
+
 export default function LoginPage({ onLoginSuccess, onNavigate }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
