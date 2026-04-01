@@ -40,13 +40,18 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
     setSuccess(null)
 
     if (!FormData.email || !FormData.password) {
-      setError("Please fill in all fields.");
-      return;
+      setError('Please fill in all fields.')
+      return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(FormData.email)) {
       setError('Please enter a valid email address.')
+      return
+    }
+
+    if (FormData.password.length < 6) {
+      setError('Password must be at least 6 characters long.')
       return
     }
 
@@ -70,7 +75,7 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
         }, 1500)
       }
     } catch (error: any) {
-        console.log(error.response.data)
+      console.log(error.response.data)
       if (error.response && error.response.data) {
         setError(
           typeof error.response.data === 'string'
