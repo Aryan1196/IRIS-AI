@@ -55,8 +55,6 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
     try {
       const response = await AxiosInstance.post('/users/login', FormData)
 
-      console.log(response)
-
       if (response.status === 200) {
         setSuccess('Login successful! Redirecting to System Ignition...')
         setFormData({
