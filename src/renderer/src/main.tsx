@@ -113,20 +113,14 @@ const AppRouter = () => {
     if (electronAPI) {
       electronAPI.on('oauth-callback', (_event: any, url: string) => {
         try {
-          // Parse the custom protocol URL (e.g., iris://dashboard?desktopToken=XYZ&refreshToken=ABC)
-          // We replace the protocol with http just to safely use the URL parser API
           const urlObj = new URL(url.replace('iris://', 'http://localhost/'))
 
           const refreshToken = urlObj.searchParams.get('refreshToken')
           const desktopToken = urlObj.searchParams.get('desktopToken')
 
           if (refreshToken) {
-            // Save the token so the gatekeeper sees it
             localStorage.setItem('iris_cloud_token', refreshToken)
 
-            // You can also hit your backend here to exchange the desktopToken if you upgrade the security flow later
-
-            // Force the router to re-evaluate auth status by pushing to the root
             navigate('/')
           }
         } catch (e) {
@@ -143,7 +137,6 @@ const AppRouter = () => {
         path="/login"
         element={
           <PublicRoute>
-            {/* Removed the onLoginSuccess prop that was causing the TS error */}
             <LoginPage />
           </PublicRoute>
         }
@@ -174,7 +167,6 @@ const AppRouter = () => {
         }
       />
 
-      {/* CATCH-ALL (404) */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
