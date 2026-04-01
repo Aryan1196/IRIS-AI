@@ -31,7 +31,6 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
   }
 
   const handleGoogleLogin = () => {
-    // VITE FIX: Use import.meta.env
     window.open(`${import.meta.env.VITE_BACKEND_KEY}/users/google`, '_blank')
   }
 
