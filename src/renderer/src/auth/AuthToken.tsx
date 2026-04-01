@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../store/auth-store'
-import AxiosInstance from '../config/AxiosInstance' // Fixed the typo from AxiosInstacne
+import AxiosInstance from '../config/AxiosInstance'
 
 export default function AuthInitializer() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken)
