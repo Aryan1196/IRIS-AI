@@ -53,17 +53,14 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   useEffect(() => {
     const verifyAccess = async () => {
       try {
-        // 1. Initial Token Check
         if (!accessToken && !localStorage.getItem('iris_cloud_token')) {
           navigate('/login', { replace: true })
           return
         }
 
-        // 2. Cloud Auth Verification
         const userRes = await AxiosInstance.get('/users/me')
         if (userRes.status !== 200) throw new Error('Cloud Auth Failed')
 
-        // 3. Local Vault Check
         if (electronAPI) {
           const keysExist = await electronAPI.invoke('check-keys-exist')
           if (!keysExist) {
@@ -72,7 +69,6 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
           }
         }
 
-        // 4. Biometric/PIN Lock Check
         if (!isSessionUnlocked && location.pathname !== '/lock') {
           navigate('/lock', { replace: true })
           return
