@@ -158,7 +158,6 @@ app.whenReady().then(() => {
     try {
       let groqEncrypted, geminiEncrypted
 
-      // Fallback for development environments where safeStorage might be unavailable
       if (safeStorage.isEncryptionAvailable()) {
         groqEncrypted = safeStorage.encryptString(groqKey).toString('base64')
         geminiEncrypted = safeStorage.encryptString(geminiKey).toString('base64')
@@ -187,7 +186,6 @@ app.whenReady().then(() => {
       const data = JSON.parse(fs.readFileSync(secureConfigPath, 'utf8'))
       let groqKey, geminiKey
 
-      // Decrypt using the appropriate method based on system availability
       if (safeStorage.isEncryptionAvailable()) {
         groqKey = safeStorage.decryptString(Buffer.from(data.groq, 'base64'))
         geminiKey = safeStorage.decryptString(Buffer.from(data.gemini, 'base64'))
