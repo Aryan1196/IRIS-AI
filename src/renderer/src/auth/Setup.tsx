@@ -41,11 +41,9 @@ export default function SetupPage({ onSetupComplete }: SetupProps) {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans flex items-center justify-center p-6 relative overflow-hidden selection:bg-[#10b981] selection:text-black">
-      {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#10b981]/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#044a33]/30 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none mix-blend-overlay" />
 
       <motion.div
@@ -84,10 +82,9 @@ export default function SetupPage({ onSetupComplete }: SetupProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Groq Key Input */}
             <div className="space-y-1">
               <label className="text-xs font-mono text-gray-200 uppercase tracking-wider ml-1 flex justify-between">
-                <span>Groq LPU Key</span>
+                <span>Groq API Key</span>
                 <span className="text-gray-500">Required</span>
               </label>
               <div className="relative group">
@@ -112,10 +109,9 @@ export default function SetupPage({ onSetupComplete }: SetupProps) {
               </div>
             </div>
 
-            {/* Gemini Key Input */}
             <div className="space-y-1">
               <label className="text-xs font-mono text-gray-200 uppercase tracking-wider ml-1 flex justify-between">
-                <span>Gemini 1.5 Pro Key</span>
+                <span>Gemini API Key</span>
                 <span className="text-gray-500">Required</span>
               </label>
               <div className="relative group">
