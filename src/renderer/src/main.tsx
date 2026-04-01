@@ -30,7 +30,7 @@ class SystemErrorBoundary extends React.Component<
       return (
         <div className="h-screen w-screen bg-[#050505] flex flex-col items-center justify-center text-red-500 font-mono p-6 text-center">
           <h1 className="text-2xl font-bold mb-4">CRITICAL SYSTEM FAILURE</h1>
-          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-300 max-w-2xl break-words">
+          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-300 max-w-2xl wrap-break-word">
             {this.state.errorMsg}
           </div>
         </div>
