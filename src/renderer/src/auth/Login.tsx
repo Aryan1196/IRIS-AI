@@ -31,7 +31,6 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
   }
 
   const handleGoogleLogin = () => {
-    // Opens the Google Auth route in your cloud backend
     window.location.href = `${process.env.VITE_BACKEND_KEY}/users/google`
   }
 
@@ -66,7 +65,6 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
         const accessToken = response.data.accessToken
         setAccessToken(accessToken)
 
-        // Delay slightly to show the success box, then trigger the React state change
         setTimeout(() => {
           if (onLoginSuccess) onLoginSuccess()
         }, 1500)
