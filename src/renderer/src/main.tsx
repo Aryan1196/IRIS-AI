@@ -7,7 +7,6 @@ import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'r
 import MainRoute from './MainRoute'
 import LockScreen from './UI/LockScreen'
 import LoginPage from './auth/Login'
-// Removed SetupPage import entirely
 import { useAuthStore } from './store/auth-store'
 import AxiosInstance from './config/AxiosInstance'
 import AuthInitializer from './auth/AuthToken'
@@ -53,19 +52,15 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   useEffect(() => {
     const verifyAccess = async () => {
       try {
-        // 1. Initial Token Check
         if (!accessToken && !localStorage.getItem('iris_cloud_token')) {
           navigate('/login', { replace: true })
           return
         }
 
-        // 2. Cloud Auth Verification
         const userRes = await AxiosInstance.get('/users/me')
         if (userRes.status !== 200) throw new Error('Cloud Auth Failed')
 
-        // HARDWARE KEY CHECK REMOVED COMPLETELY.
 
-        // 3. Biometric/PIN Lock Check
         if (!isSessionUnlocked && location.pathname !== '/lock') {
           navigate('/lock', { replace: true })
           return
@@ -115,7 +110,6 @@ const AppRouter = () => {
             localStorage.setItem('iris_cloud_token', refreshToken)
             useAuthStore.getState().setAccessToken(accessToken)
 
-            // Triggers the Gatekeeper which will push to /lock
             navigate('/')
           }
         } catch (e) {
@@ -137,7 +131,6 @@ const AppRouter = () => {
         }
       />
 
-      {/* SETUP ROUTE REMOVED COMPLETELY */}
 
       <Route
         path="/lock"
