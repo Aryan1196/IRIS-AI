@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import { Mail, Lock, ArrowRight, Cpu, Sparkles, Eye, EyeOff } from 'lucide-react'
 import { FcGoogle } from 'react-icons/fc'
 import { FormDataLogin } from '../types/form-type'
-import AxiosInstance from '@/config/AxiosInstacne'
 import { useAuthStore } from '../store/auth-store'
 import ErrorBox from '@renderer/utils/ErrorBox'
+import AxiosInstance from '@renderer/config/AxiosInstance'
 
 interface LoginProps {
   onLoginSuccess?: () => void
