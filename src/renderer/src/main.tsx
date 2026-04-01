@@ -66,7 +66,7 @@ const RootApp = () => {
         setAuthState('locked')
       } catch (error) {
         console.error('System Check Failed:', error)
-        setAuthState('login') // Fallback to login if something breaks
+        setAuthState('login')
       }
     }
 
