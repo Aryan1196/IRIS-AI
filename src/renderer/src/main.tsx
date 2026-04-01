@@ -112,7 +112,7 @@ const AppRouter = () => {
           const urlObj = new URL(url.replace('iris://', 'http://localhost/'))
 
           const refreshToken = urlObj.searchParams.get('refreshToken')
-          const desktopToken = urlObj.searchParams.get('desktopToken')
+          const accessToken = urlObj.searchParams.get('accessToken')
 
           if (refreshToken) {
             localStorage.setItem('iris_cloud_token', refreshToken)
@@ -147,7 +147,7 @@ const AppRouter = () => {
             <LockScreen
               onUnlock={() => {
                 isSessionUnlocked = true
-                navigate('/') // Unlock the session and enter the app
+                navigate('/') 
               }}
             />
           </ProtectedRoute>
