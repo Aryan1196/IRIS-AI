@@ -72,7 +72,7 @@ export class GeminiLiveService {
   private isMicMuted: boolean = false
 
   private nextStartTime: number = 0
-  public model: string = 'models/gemini-2.5-flash-native-audio-preview-12-2025'
+  public model: string = 'models/gemini-3.1-flash-live-preview'
 
   private aiResponseBuffer: string = ''
   private userInputBuffer: string = ''
@@ -94,6 +94,7 @@ export class GeminiLiveService {
       this.apiKey = secureKeys?.geminiKey || localStorage.getItem('iris_custom_api_key') || ''
     } else {
       this.apiKey = localStorage.getItem('iris_custom_api_key') || ''
+      console.log(this.apiKey)
     }
 
     if (!this.apiKey || this.apiKey.trim() === '') {
