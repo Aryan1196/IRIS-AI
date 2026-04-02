@@ -154,7 +154,6 @@ export default function registerPhantomKeyboard() {
       `
       await fs.writeFile(filePath, htmlCode, 'utf-8')
 
-      // Start small, we will resize it when the stream begins
       phantomWindow = new BrowserWindow({
         x: Math.round(cursorPoint.x - 250),
         y: Math.round(cursorPoint.y - 40),
@@ -205,7 +204,6 @@ export default function registerPhantomKeyboard() {
   ipcMain.on('phantom-execute-stream', async (event, promptText) => {
     if (!event) return
     try {
-      // 1. DYNAMICALLY READ FROM THE OS VAULT, NOT .ENV
       let apiKey = ''
       const secureConfigPath = path.join(app.getPath('userData'), 'iris_secure_vault.json')
 
@@ -264,9 +262,8 @@ export default function registerPhantomKeyboard() {
 
         buffer += decoder.decode(value, { stream: true })
 
-        // Parse SSE lines safely
         const lines = buffer.split('\n')
-        buffer = lines.pop() || '' // Keep the incomplete line in the buffer
+        buffer = lines.pop() || ''
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -279,7 +276,6 @@ export default function registerPhantomKeyboard() {
 
               if (textChunk) {
                 fullGeneratedText += textChunk
-                // Send the chunk to the UI to display the streaming effect
                 if (phantomWindow) {
                   phantomWindow.webContents.send('phantom-stream-chunk', textChunk)
                 }
@@ -293,17 +289,13 @@ export default function registerPhantomKeyboard() {
 
       console.log('👻 Phantom Streaming Complete. Injecting via Clipboard.')
 
-      // Wait a moment for the user to see the completed code
       await sleep(400)
       if (phantomWindow) phantomWindow.close()
 
-      // Wait for the window to vanish so the IDE regains focus
       await sleep(150)
 
-      // Backup old clipboard
       const originalClipboard = clipboard.readText()
 
-      // Inject the perfect formatted code
       clipboard.writeText(fullGeneratedText)
 
       const isMac = process.platform === 'darwin'
@@ -313,7 +305,6 @@ export default function registerPhantomKeyboard() {
       await keyboard.pressKey(modifier, Key.V)
       await keyboard.releaseKey(Key.V, modifier)
 
-      // Restore old clipboard seamlessly
       setTimeout(() => {
         clipboard.writeText(originalClipboard)
       }, 500)
