@@ -29,10 +29,8 @@ export default function LiveCodingWidget() {
       setIsVisible(true)
       setIsGenerating(true)
 
-      // 1. EXTRACT KEY FROM LOCAL STORAGE
       const geminiKey = localStorage.getItem('iris_custom_api_key') || ''
 
-      // 2. HANDLE MISSING KEY GRACEFULLY IN THE UI
       if (!geminiKey.trim()) {
         setCode(
           '// ❌ SYSTEM ERROR: Missing Gemini API Key.\n// Please configure it in the Command Center Vault (Settings Tab).'
@@ -43,7 +41,6 @@ export default function LiveCodingWidget() {
 
       setCode('// Initializing IRIS Neural Forge...\n')
 
-      // 3. PASS KEY TO IPC DYNAMICALLY
       const result = await window.electron.ipcRenderer.invoke('start-live-coding', {
         prompt,
         filename: file_name,
