@@ -59,6 +59,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
         const userRes = await AxiosInstance.get('/users/me')
         if (userRes.status !== 200) throw new Error('Cloud Auth Failed')
+          
 
 
         if (!isSessionUnlocked && location.pathname !== '/lock') {
