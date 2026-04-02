@@ -61,7 +61,6 @@ export default function registerOracle({ ipcMain }: { ipcMain: IpcMain }) {
     return { success: true }
   })
 
-  // 1. EXPECT DIR_PATH AND GEMINI_KEY IN THE PAYLOAD
   ipcMain.handle('ingest-codebase', async (event, { dirPath, geminiKey }) => {
     try {
       if (!geminiKey) {
@@ -202,7 +201,6 @@ export default function registerOracle({ ipcMain }: { ipcMain: IpcMain }) {
     }
   })
 
-  // 2. EXPECT QUERY, GEMINI_KEY, AND GROQ_KEY IN THE PAYLOAD
   ipcMain.handle('consult-oracle', async (_event, { query, geminiKey, groqKey }) => {
     try {
       if (vectorDB.length === 0)
