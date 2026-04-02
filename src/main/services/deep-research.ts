@@ -4,121 +4,119 @@ import { tavily } from '@tavily/core'
 import Groq from 'groq-sdk'
 
 export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) {
-  ipcMain.handle('execute-deep-research', async (event, query: string) => {
-    try {
-      const tavilyKey =
-        (import.meta.env as any).VITE_TAVILY_API_KEY || (process.env as any).VITE_TAVILY_API_KEY
-      const notionKey =
-        (import.meta.env as any).VITE_NOTION_API_KEY || (process.env as any).VITE_NOTION_API_KEY
-      const notionDbId =
-        (import.meta.env as any).VITE_NOTION_DATABASE_ID ||
-        (process.env as any).VITE_NOTION_DATABASE_ID
-      const groqKey =
-        (import.meta.env as any).MAIN_VITE_GROQ_API_KEY || (process.env as any).VITE_GROQ_API_KEY
+  // 1. EXTRACT ALL KEYS DIRECTLY FROM THE IPC PAYLOAD
+  ipcMain.handle(
+    'execute-deep-research',
+    async (event, { query, tavilyKey, notionKey, notionDbId, groqKey }) => {
+      try {
+        // 2. STRICT ERROR CHECKING FOR ALL REQUIRED NEURAL UPLINKS
+        if (!tavilyKey || !notionKey || !notionDbId || !groqKey) {
+          throw new Error(
+            'Missing API Keys. Please configure Tavily, Notion (Key & DB ID), and Groq in the Command Center.'
+          )
+        }
 
-      if (!tavilyKey || !notionKey || !notionDbId || !groqKey) throw new Error('Missing API Keys.')
+        event.sender.send('oracle-progress', {
+          status: 'scanning',
+          file: 'IRIS and Tavily Neural Search Active...',
+          totalFound: 1
+        })
 
-      event.sender.send('oracle-progress', {
-        status: 'scanning',
-        file: 'IRIS and Tavily Neural Search Active...',
-        totalFound: 1
-      })
+        const tvly = tavily({ apiKey: tavilyKey })
+        const tavilyData = await tvly.search(query, {
+          searchDepth: 'advanced',
+          includeAnswer: true,
+          maxResults: 5
+        })
+        const rawContext = tavilyData.results
+          .map((r: any) => `Source: ${r.url}\nContent: ${r.content}`)
+          .join('\n\n')
 
-      const tvly = tavily({ apiKey: tavilyKey })
-      const tavilyData = await tvly.search(query, {
-        searchDepth: 'advanced',
-        includeAnswer: true,
-        maxResults: 5
-      })
-      const rawContext = tavilyData.results
-        .map((r: any) => `Source: ${r.url}\nContent: ${r.content}`)
-        .join('\n\n')
+        event.sender.send('oracle-progress', {
+          status: 'reading',
+          file: 'Llama 3.1 Instantly Synthesizing Data...',
+          totalFound: 2
+        })
 
-      event.sender.send('oracle-progress', {
-        status: 'reading',
-        file: 'Llama 3.1 Instantly Synthesizing Data...',
-        totalFound: 2
-      })
-
-      const groq = new Groq({ apiKey: groqKey })
-      const prompt = `
+        const groq = new Groq({ apiKey: groqKey })
+        const prompt = `
         You are an elite research analyst. Answer: "${query}".
         Output ONLY a JSON object with a key "blocks" containing an array of Notion block objects (types: heading_2, heading_3, paragraph, bulleted_list_item).
         Each object MUST have a "text" key that is a simple STRING. Do not use nested objects for text.
         Context: ${rawContext}
       `
 
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
-        model: 'llama-3.1-8b-instant',
-        response_format: { type: 'json_object' }
-      })
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'llama-3.1-8b-instant',
+          response_format: { type: 'json_object' }
+        })
 
-      const jsonString = chatCompletion.choices[0]?.message?.content || '{"blocks": []}'
-      const parsedData = JSON.parse(jsonString)
-      const notionBlocksData = parsedData.blocks || []
+        const jsonString = chatCompletion.choices[0]?.message?.content || '{"blocks": []}'
+        const parsedData = JSON.parse(jsonString)
+        const notionBlocksData = parsedData.blocks || []
 
-      event.sender.send('oracle-progress', {
-        status: 'embedded',
-        file: 'Injecting into Notion DB...',
-        totalFound: 3
-      })
+        event.sender.send('oracle-progress', {
+          status: 'embedded',
+          file: 'Injecting into Notion DB...',
+          totalFound: 3
+        })
 
-      const notionChildren = notionBlocksData.map((block: any) => {
-        let safeText = 'No content generated.'
+        const notionChildren = notionBlocksData.map((block: any) => {
+          let safeText = 'No content generated.'
 
-        if (typeof block.text === 'string') {
-          safeText = block.text
-        } else if (typeof block.text === 'object' && block.text !== null) {
-          safeText = block.text.content || block.text.text || JSON.stringify(block.text)
-        } else {
-          safeText = String(block.text || '')
-        }
-
-        if (safeText.length > 2000) safeText = safeText.substring(0, 1995) + '...'
-
-        const safeType = ['heading_2', 'heading_3', 'paragraph', 'bulleted_list_item'].includes(
-          block.type
-        )
-          ? block.type
-          : 'paragraph'
-
-        return {
-          object: 'block',
-          type: safeType,
-          [safeType]: {
-            rich_text: [{ type: 'text', text: { content: safeText } }]
+          if (typeof block.text === 'string') {
+            safeText = block.text
+          } else if (typeof block.text === 'object' && block.text !== null) {
+            safeText = block.text.content || block.text.text || JSON.stringify(block.text)
+          } else {
+            safeText = String(block.text || '')
           }
-        }
-      })
 
-      const extractedSummary =
-        notionChildren
-          .map((b: any) => b[b.type].rich_text[0].text.content)
-          .join('\n')
-          .substring(0, 800) + '...'
+          if (safeText.length > 2000) safeText = safeText.substring(0, 1995) + '...'
 
-      const notion = new Client({ auth: notionKey })
-      const newPage = await notion.pages.create({
-        parent: { database_id: notionDbId },
-        properties: { Name: { title: [{ text: { content: `IRIS Deep-Dive: ${query}` } }] } },
-        children: notionChildren
-      })
+          const safeType = ['heading_2', 'heading_3', 'paragraph', 'bulleted_list_item'].includes(
+            block.type
+          )
+            ? block.type
+            : 'paragraph'
 
-      return { success: true, url: (newPage as any).url, summary: extractedSummary }
-    } catch (error) {
-      console.error(error)
-      return { success: false, error: String(error) }
+          return {
+            object: 'block',
+            type: safeType,
+            [safeType]: {
+              rich_text: [{ type: 'text', text: { content: safeText } }]
+            }
+          }
+        })
+
+        const extractedSummary =
+          notionChildren
+            .map((b: any) => b[b.type].rich_text[0].text.content)
+            .join('\n')
+            .substring(0, 800) + '...'
+
+        const notion = new Client({ auth: notionKey })
+        const newPage = await notion.pages.create({
+          parent: { database_id: notionDbId },
+          properties: { Name: { title: [{ text: { content: `IRIS Deep-Dive: ${query}` } }] } },
+          children: notionChildren
+        })
+
+        return { success: true, url: (newPage as any).url, summary: extractedSummary }
+      } catch (error) {
+        console.error(error)
+        return { success: false, error: String(error) }
+      }
     }
-  })
+  )
 
-  ipcMain.handle('read-notion-reports', async () => {
+  // 3. APPLY THE SAME PAYLOAD EXTRACTION HERE
+  ipcMain.handle('read-notion-reports', async (event, { notionKey, notionDbId }) => {
     try {
-      const notionKey =
-        (import.meta.env as any).VITE_NOTION_API_KEY || (process.env as any).VITE_NOTION_API_KEY
-      const notionDbId =
-        (import.meta.env as any).VITE_NOTION_DATABASE_ID ||
-        (process.env as any).VITE_NOTION_DATABASE_ID
+      if (!notionKey || !notionDbId) {
+        throw new Error('Missing Notion API Key or Database ID in Command Center.')
+      }
 
       const response = await fetch(`https://api.notion.com/v1/databases/${notionDbId}/query`, {
         method: 'POST',
