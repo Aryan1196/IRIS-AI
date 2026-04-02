@@ -1227,7 +1227,7 @@ ${JSON.stringify(history)}
           turns: [
             {
               role: 'user',
-              parts: [{ text: `Kaisa hai ${cloudUser.name}? Aaj ki kahani kya hai?` }]
+              parts: [{ text: `Hello! Kaisa hai ${cloudUser.name}?` }]
             }
           ],
           turnComplete: true
