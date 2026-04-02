@@ -237,7 +237,6 @@ ${JSON.stringify(history)}
     this.socket.onopen = async () => {
       console.log('🟢 IRIS Connected')
 
-      // 3. EXPLICITLY RESUME AUDIO CONTEXT
       if (this.audioContext && this.audioContext.state === 'suspended') {
         await this.audioContext.resume()
       }
