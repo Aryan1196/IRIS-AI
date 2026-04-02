@@ -13,8 +13,5 @@ out
 
 .idea/
 
-.vscode/*
-!.vscode/extensions.json
-
 credentials.json
 gmail_token.json
