@@ -46,6 +46,7 @@ export default function registerIrisCoder({ ipcMain, app }: { ipcMain: IpcMain; 
       return { success: false, error: String(err) }
     }
   })
+  
 
   ipcMain.handle('open-in-vscode', async (_event, filePath) => {
     try {
