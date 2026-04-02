@@ -4,12 +4,10 @@ import { tavily } from '@tavily/core'
 import Groq from 'groq-sdk'
 
 export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) {
-  // 1. EXTRACT ALL KEYS DIRECTLY FROM THE IPC PAYLOAD
   ipcMain.handle(
     'execute-deep-research',
     async (event, { query, tavilyKey, notionKey, notionDbId, groqKey }) => {
       try {
-        // 2. STRICT ERROR CHECKING FOR ALL REQUIRED NEURAL UPLINKS
         if (!tavilyKey || !notionKey || !notionDbId || !groqKey) {
           throw new Error(
             'Missing API Keys. Please configure Tavily, Notion (Key & DB ID), and Groq in the Command Center.'
@@ -111,7 +109,6 @@ export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) 
     }
   )
 
-  // 3. APPLY THE SAME PAYLOAD EXTRACTION HERE
   ipcMain.handle('read-notion-reports', async (event, { notionKey, notionDbId }) => {
     try {
       if (!notionKey || !notionDbId) {
