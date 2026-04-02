@@ -1227,7 +1227,7 @@ ${JSON.stringify(history)}
           turns: [
             {
               role: 'user',
-              parts: [{ text: 'System uplink established. Give me a brief, 1-sentence greeting.' }]
+              parts: [{ text: `Main IRIS hu 👋 Hello ${cloudUser.name}. How can I help you?` }]
             }
           ],
           turnComplete: true
