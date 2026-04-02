@@ -4,7 +4,7 @@ import React, { JSX, StrictMode, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 
-import MainRoute from './MainRoute'
+import MainRoute from '.'
 import LockScreen from './UI/LockScreen'
 import LoginPage from './auth/Login'
 import { useAuthStore } from './store/auth-store'

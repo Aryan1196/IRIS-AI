@@ -1,4 +1,4 @@
-import MainRoute from './MainRoute'
+import MainRoute from '.'
 
 const App = () => {
   return (

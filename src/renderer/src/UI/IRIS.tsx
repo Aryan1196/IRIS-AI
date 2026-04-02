@@ -19,7 +19,7 @@ import ViewSkeleton from '@renderer/components/ViewSkelrton'
 
 import DashboardView from '../views/Dashboard'
 import PhoneView from '../views/Phone'
-import { VisionMode } from '@renderer/MainRoute'
+import { VisionMode } from '@renderer/index'
 
 // const AppsView = lazy(() => import('../views/APP'))
 const WorkFlowEditorView = lazy(() => import('../views/WorkFlowEditor'))
