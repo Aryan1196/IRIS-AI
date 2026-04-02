@@ -42,6 +42,7 @@ export default function registerWebsiteBuilder() {
         throw new Error('API Key missing. Make sure VITE_GEMINI_API_KEY is in your .env file.')
 
       const ai = new GoogleGenAI({ apiKey })
+      
 
       const sysPrompt = `You are an elite, Awwwards-winning frontend developer and UI/UX designer. 
 Build a highly animated, visually stunning, clean, and premium website based on the user prompt.
