@@ -1,4 +1,4 @@
-import IndexRoot from "."
+import IndexRoot from "./IndexRoot"
 
 const App = () => {
   return (

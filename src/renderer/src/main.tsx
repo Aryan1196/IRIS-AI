@@ -9,7 +9,7 @@ import LoginPage from './auth/Login'
 import { useAuthStore } from './store/auth-store'
 import AxiosInstance from './config/AxiosInstance'
 import AuthInitializer from './auth/AuthToken'
-import IndexRoot from '.'
+import IndexRoot from './IndexRoot'
 
 const electronAPI = (window as any).electron?.ipcRenderer
 
