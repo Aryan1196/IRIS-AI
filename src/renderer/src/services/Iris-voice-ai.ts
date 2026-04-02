@@ -89,7 +89,6 @@ export class GeminiLiveService {
   }
 
   async connect(): Promise<void> {
-    // 1. DYNAMICALLY FETCH API KEY (Prioritize OS Secure Vault, fallback to localStorage)
     if (window.electron?.ipcRenderer) {
       const secureKeys = await window.electron.ipcRenderer.invoke('secure-get-keys')
       this.apiKey = secureKeys?.geminiKey || localStorage.getItem('iris_custom_api_key') || ''
@@ -97,12 +96,10 @@ export class GeminiLiveService {
       this.apiKey = localStorage.getItem('iris_custom_api_key') || ''
     }
 
-    // If still no key, throw a hard error so MainRoute.tsx can catch it and show an alert
     if (!this.apiKey || this.apiKey.trim() === '') {
       throw new Error('NO_API_KEY')
     }
 
-    // 2. FETCH CLOUD USER DATA (Silent fallback if offline)
     let cloudUser = {
       name: localStorage.getItem('iris_user_name') || 'Harsh Pandey',
       email: 'Not linked'
