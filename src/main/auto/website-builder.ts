@@ -6,7 +6,8 @@ import { GoogleGenAI } from '@google/genai'
 let previewWin: BrowserWindow | null = null
 
 export default function registerWebsiteBuilder() {
-  ipcMain.handle('build-animated-website', async (event, { prompt }) => {
+  // 1. EXTRACT GEMINI KEY DIRECTLY FROM THE IPC PAYLOAD
+  ipcMain.handle('build-animated-website', async (event, { prompt, geminiKey }) => {
     if (!event) return
     try {
       previewWin = new BrowserWindow({
@@ -33,16 +34,15 @@ export default function registerWebsiteBuilder() {
       `
       await previewWin.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(shellHtml)}`)
 
-      const apiKey =
-        (import.meta.env as any).VITE_GEMINI_API_KEY ||
-        (import.meta.env as any).MAIN_VITE_GEMINI_API_KEY ||
-        (process.env as any).VITE_GEMINI_API_KEY
+      // 2. STRICT ERROR CHECKING FOR THE NEW ARCHITECTURE
+      if (!geminiKey || geminiKey.trim() === '') {
+        throw new Error(
+          'Missing Gemini API Key. Please configure it in the Command Center Vault (Settings Tab).'
+        )
+      }
 
-      if (!apiKey)
-        throw new Error('API Key missing. Make sure VITE_GEMINI_API_KEY is in your .env file.')
-
-      const ai = new GoogleGenAI({ apiKey })
-      
+      // 3. INITIALIZE CLIENT DYNAMICALLY
+      const ai = new GoogleGenAI({ apiKey: geminiKey })
 
       const sysPrompt = `You are an elite, Awwwards-winning frontend developer and UI/UX designer. 
 Build a highly animated, visually stunning, clean, and premium website based on the user prompt.
