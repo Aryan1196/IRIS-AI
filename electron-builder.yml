@@ -14,7 +14,7 @@ asarUnpack:
 
 win:
   executableName: iris-ai
-  icon: build/icon.ico # <-- THIS FIXES THE MISSING ICON ON THE FILE ITSELF
+  icon: build/icon.ico 
   target:
     - target: nsis
     - target: msi
@@ -26,9 +26,9 @@ nsis:
 
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
-  installerSidebar: build/installerSidebar.bmp # The left panel image!
+  installerSidebar: build/installerSidebar.bmp 
   uninstallerSidebar: build/installerSidebar.bmp
-  installerHeaderIcon: build/icon.ico # Small logo in the top right
+  installerHeaderIcon: build/icon.ico 
 
   oneClick: false
   allowToChangeInstallationDirectory: true
