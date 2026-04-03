@@ -195,7 +195,6 @@ export default function registerPhantomKeyboard() {
 
   ipcMain.on('phantom-resize', (event, height) => {
     if (!event) {
-      console.warn('Received phantom-resize event without event object.')
     }
     if (phantomWindow) {
       const bounds = phantomWindow.getBounds()
@@ -218,7 +217,6 @@ export default function registerPhantomKeyboard() {
             apiKey = Buffer.from(data.gemini, 'base64').toString('utf8')
           }
         } catch (e) {
-          console.error('Failed to read secure vault for Phantom Key:', e)
         }
       }
 
@@ -283,13 +281,11 @@ export default function registerPhantomKeyboard() {
                 }
               }
             } catch (e) {
-              console.error('Failed to parse stream chunk', e)
             }
           }
         }
       }
 
-      console.log('👻 Phantom Streaming Complete. Injecting via Clipboard.')
 
       await sleep(400)
       if (phantomWindow) phantomWindow.close()
@@ -311,7 +307,6 @@ export default function registerPhantomKeyboard() {
         clipboard.writeText(originalClipboard)
       }, 500)
     } catch (error) {
-      console.error('Phantom Streaming Execution Failed:', error)
       if (phantomWindow) {
         phantomWindow.webContents.send('phantom-error', `Execution Failed: ${String(error)}`)
       }

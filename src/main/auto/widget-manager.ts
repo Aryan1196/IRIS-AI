@@ -86,7 +86,6 @@ export default function registerWidgetMaker() {
       activeWidgets = []
       return { success: true, message: `Closed ${count} active widget(s).` }
     } catch (error) {
-      console.error('Widget Cleanup Error:', error)
       return { success: false, error: String(error) }
     }
   })
