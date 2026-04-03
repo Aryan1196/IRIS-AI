@@ -17,7 +17,6 @@ export default function ImageWidget() {
 
       setPrompt(prompt)
 
-      // 1. Loading State
       if (loading) {
         setIsVisible(true)
         setLoading(true)
@@ -27,7 +26,6 @@ export default function ImageWidget() {
         return
       }
 
-      // 2. Error State
       if (error) {
         setHasError(true)
         setLoading(false)
