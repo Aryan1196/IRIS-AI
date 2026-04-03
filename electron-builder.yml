@@ -24,14 +24,12 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
 
-  # --- THE NEON EMERALD THEME CONFIG ---
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
   installerSidebar: build/installerSidebar.bmp # The left panel image!
   uninstallerSidebar: build/installerSidebar.bmp
   installerHeaderIcon: build/icon.ico # Small logo in the top right
 
-  # --- MULTI-STEP WIZARD ---
   oneClick: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: always
