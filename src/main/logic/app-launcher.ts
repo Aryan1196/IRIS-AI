@@ -86,7 +86,6 @@ const PROCESS_NAMES: Record<string, string> = {
 }
 
 export default function registerAppLauncher(ipcMain: IpcMain) {
-  console.log('🚀 [Main] Registering App Launcher & Terminator...')
 
   ipcMain.removeHandler('open-app')
   ipcMain.handle('open-app', async (_event, appName: string) => {
@@ -113,7 +112,6 @@ export default function registerAppLauncher(ipcMain: IpcMain) {
       }
 
       if (PROTECTED_PROCESSES.includes(processName.toLowerCase())) {
-        console.warn(`⚠️ Blocked attempt to kill system process: ${processName}`)
         resolve({
           success: false,
           error: `Security Protocol: I cannot close '${appName}' (System Critical Process). Doing so would crash your PC.`
@@ -135,7 +133,6 @@ export default function registerAppLauncher(ipcMain: IpcMain) {
 }
 
 function executeCommand(command: string, appName: string, resolve: any) {
-  console.log(`🚀 IRIS Launching Direct: ${command}`)
   exec(command, (error) => {
     if (error) {
       launchViaPowerShell(appName, resolve)
@@ -149,7 +146,6 @@ function launchViaPowerShell(appName: string, resolve: any) {
   const psCommand = `powershell -Command "Get-StartApps | Where-Object { $_.Name -like '*${appName}*' } | Select-Object -First 1 -ExpandProperty AppID"`
 
   exec(psCommand, (err, stdout) => {
-    if (err) console.warn(`PowerShell search failed for ${appName}:`, err)
 
     const appId = stdout.trim()
 

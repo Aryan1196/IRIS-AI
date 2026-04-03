@@ -44,7 +44,6 @@ const getSystemPath = (name: any) => {
   try {
     return app.getPath(name)
   } catch (e) {
-    console.warn(`⚠️ Electron failed to resolve '${name}'. Using fallback.`)
     const home = os.homedir()
     switch (name) {
       case 'desktop':
