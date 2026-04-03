@@ -50,7 +50,6 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
       const data = await window.electron.ipcRenderer.invoke('get-notes')
       setNotes(data)
     } catch (e) {
-      console.error(e)
     }
   }
 

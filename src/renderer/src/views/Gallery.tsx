@@ -49,7 +49,6 @@ const GalleryView = () => {
       const data = await window.electron.ipcRenderer.invoke('get-gallery')
       if (Array.isArray(data)) setAllImages(data)
     } catch (e) {
-      console.error('Gallery Fetch Error:', e)
     }
   }
 

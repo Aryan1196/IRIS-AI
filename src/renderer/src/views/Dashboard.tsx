@@ -80,7 +80,6 @@ export default function DashboardView({
         ])
         setModelsLoaded(true)
       } catch (e) {
-        console.error('Dashboard models failed to load', e)
       }
     }
     loadModels()
@@ -183,7 +182,7 @@ export default function DashboardView({
       videoElementRef.current = node
       if (node && activeStream && isVideoOn) {
         node.srcObject = activeStream
-        node.onloadedmetadata = () => node.play().catch((e) => console.warn(e))
+        node.onloadedmetadata = () => node.play().catch((e) => {})
       }
     },
     [activeStream, isVideoOn, visionMode]
@@ -193,7 +192,7 @@ export default function DashboardView({
     (node: HTMLVideoElement | null) => {
       if (node && activeStream && isVideoOn) {
         node.srcObject = activeStream
-        node.onloadedmetadata = () => node.play().catch((e) => console.warn(e))
+        node.onloadedmetadata = () => node.play().catch((e) => {})
       }
     },
     [activeStream, isVideoOn, visionMode]
