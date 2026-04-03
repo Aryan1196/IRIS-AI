@@ -182,7 +182,7 @@ export default function DashboardView({
       videoElementRef.current = node
       if (node && activeStream && isVideoOn) {
         node.srcObject = activeStream
-        node.onloadedmetadata = () => node.play().catch((e) => {})
+        node.onloadedmetadata = () => node.play().catch(() => {})
       }
     },
     [activeStream, isVideoOn, visionMode]
@@ -192,7 +192,7 @@ export default function DashboardView({
     (node: HTMLVideoElement | null) => {
       if (node && activeStream && isVideoOn) {
         node.srcObject = activeStream
-        node.onloadedmetadata = () => node.play().catch((e) => {})
+        node.onloadedmetadata = () => node.play().catch(() => {})
       }
     },
     [activeStream, isVideoOn, visionMode]

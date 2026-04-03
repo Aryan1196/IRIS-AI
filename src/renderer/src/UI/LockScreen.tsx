@@ -73,7 +73,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        await videoRef.current.play().catch((e) => {})
+        await videoRef.current.play().catch(() => {})
       }
     } catch (err) {
       setAiStatus('CAMERA HARDWARE OFFLINE - USE PIN')
