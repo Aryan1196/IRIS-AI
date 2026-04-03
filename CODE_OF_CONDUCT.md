@@ -36,7 +36,7 @@ This Code of Conduct applies within all community spaces related to IRIS AI (inc
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the core IRIS maintainers responsible for enforcement at **[gamerpandeyharsh@gmail.com]**. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the core IRIS maintainers responsible for enforcement at **gamerpandeyharsh@gmail.com**. All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
