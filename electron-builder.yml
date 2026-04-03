@@ -23,10 +23,10 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
 
-  oneClick: false # Disables the silent auto-install
-  allowToChangeInstallationDirectory: true # Step: Choose Save Location
-  createDesktopShortcut: always # Step: Create Desktop Icon
-  createStartMenuShortcut: true # Step: Add to Start Menu
+  oneClick: false 
+  allowToChangeInstallationDirectory: true 
+  createDesktopShortcut: always 
+  createStartMenuShortcut: true 
   runAfterFinish: true # Step: Launch after closing installer
 
 msi:
