@@ -1,4 +1,4 @@
-name: Build IRIS AI (Test Only)
+name: IRIS AI Pipeline
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
-    name: Build & Verify
+  verify-and-build:
+    name: Lint & Build Windows
     runs-on: windows-latest
 
     steps:
@@ -25,5 +25,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Compile Application
+      - name: Run Linter (Code Quality Check)
+        run: npm run lint
+
+      - name: Compile Application (Windows Build Check)
         run: npm run build:win
