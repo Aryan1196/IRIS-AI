@@ -7,6 +7,10 @@ on:
     branches: ['main']
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify-and-build:
     name: Lint & Build Windows
@@ -25,8 +29,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Linter (Code Quality Check)
+      - name: Run Linter
         run: npm run lint
 
-      - name: Compile Application (Windows Build Check)
+      - name: Compile Application
         run: npm run build:win
