@@ -1,0 +1,18 @@
+# Enforce LF line endings for all text files
+* text=auto eol=lf
+
+# Explicitly declare text files you want to always be normalized
+*.js text
+*.ts text
+*.tsx text
+*.json text
+*.md text
+*.yml text
+*.css text
+
+# Exclude binary files from line ending conversions
+*.png binary
+*.ico binary
+*.bmp binary
+*.jpg binary
+*.jpeg binary
