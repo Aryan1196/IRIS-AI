@@ -65,7 +65,6 @@ appImage:
 
 npmRebuild: false
 
-# --- UPDATED SECTION FOR AUTO-UPDATES ---
 publish:
   provider: github
   owner: 201Harsh
