@@ -116,7 +116,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
   }
 
   return (
-    <div className="flex-1 bg-gray-900/70 h-full grid grid-cols-12 gap-6 p-6 animate-in fade-in zoom-in duration-300">
+    <div className="flex-1 bg-white/5 h-full grid grid-cols-12 gap-6 p-6 animate-in fade-in zoom-in duration-300">
       <div className="col-span-4 flex flex-col gap-4 h-full overflow-hidden">
         <div className="flex items-center justify-between pb-2 border-b border-white/10">
           <div className="flex items-center gap-2 text-zinc-100">
@@ -138,7 +138,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
 
         <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-small">
           {notes.length === 0 ? (
-            <div className="text-center text-zinc-600 text-xs mt-10">
+            <div className="text-center text-zinc-400 text-xs mt-10">
               <p>No memories saved.</p>
               <p className="mt-2 opacity-50">Click + or ask IRIS.</p>
             </div>
@@ -228,7 +228,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
                 <span className="text-xs font-bold tracking-wider">{selectedNote.title}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[9px] font-mono text-zinc-600 bg-black/20 px-2 py-1 rounded">
+                <span className="text-[9px] font-mono text-zinc-400 bg-black/20 px-2 py-1 rounded">
                   READ ONLY
                 </span>
                 <button
