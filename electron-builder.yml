@@ -17,8 +17,6 @@ win:
   icon: build/icon.ico
   target:
     - target: nsis
-    - target: msi
-
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -35,12 +33,6 @@ nsis:
   createDesktopShortcut: always
   createStartMenuShortcut: true
   runAfterFinish: true
-
-msi:
-  oneClick: false
-  runAfterFinish: true
-  shortcutName: ${productName}
-  createDesktopShortcut: always
 
 mac:
   entitlementsInherit: build/entitlements.mac.plist
@@ -64,7 +56,6 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 
 npmRebuild: false
-
 publish:
   provider: github
   owner: 201Harsh
