@@ -1078,22 +1078,13 @@ ${JSON.stringify(history)}
                 {
                   name: 'deep_research',
                   description:
-                    "ACTION: Autonomous RAG Agent. Performs a deep web crawl, synthesizes a report using Llama 3, and saves it to Notion. Use this when the user asks to 'research', 'build a report', or needs you to summarize real-world information.",
+                    "ACTION: Autonomous RAG Agent. Performs a deep web crawl, synthesizes a report using Llama 3. Use this when the user asks to 'research', 'build a report', or needs you to summarize real-world information.",
                   parameters: {
                     type: 'OBJECT',
                     properties: {
                       query: { type: 'STRING', description: 'The exact research question.' }
                     },
                     required: ['query']
-                  }
-                },
-                {
-                  name: 'read_notion_reports',
-                  description:
-                    "ACTION: Queries the user's Notion database to read previously saved research reports. Use this when the user asks 'what did we research about X', 'read my Notion', or 'check my reports'.",
-                  parameters: {
-                    type: 'OBJECT',
-                    properties: {}
                   }
                 },
                 {
