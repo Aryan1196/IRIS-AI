@@ -47,6 +47,7 @@ import registerScreenPeeler from './handlers/ScreenPeeler-handler'
 import registerPhantomKeyboard from './handlers/PhantomControl-handler'
 import registerSecurityVault from './security/Security'
 import registerLockSystem from './security/lock-system'
+import { autoUpdater } from 'electron-updater';
 
 app.commandLine.appendSwitch('use-fake-ui-for-media-stream')
 
