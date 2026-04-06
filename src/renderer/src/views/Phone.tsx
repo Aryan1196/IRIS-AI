@@ -304,7 +304,6 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
           </div>
         </div>
 
-        {/* Right Column: Setup Protocol Guide */}
         <div className="w-full lg:w-1/2 max-w-2xl flex flex-col">
           <div className="bg-black border border-emerald-900/40 rounded-2xl shadow-lg p-8 md:p-10 flex flex-col relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
