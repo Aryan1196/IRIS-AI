@@ -14,7 +14,8 @@ import {
   RiTerminalBoxLine,
   RiHome5Line,
   RiHistoryLine,
-  RiAddLine
+  RiAddLine,
+  RiTerminalLine
 } from 'react-icons/ri'
 
 const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
@@ -77,8 +78,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
           knownNotifs.current = currentNotifs
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   const connectToDevice = async (targetIp: string, targetPort: string) => {
@@ -98,7 +98,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
         startScreenStream()
       } else {
         setStatus('idle')
-        setErrorMsg('Device offline. Is Wi-Fi on and screen unlocked?')
+        setErrorMsg('Connection refused. Ensure TCP/IP daemon is running (adb tcpip 5555).')
       }
     } catch (e) {
       setStatus('idle')
@@ -161,7 +161,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
 
   if (status !== 'connected' && uiMode === 'history') {
     return (
-      <div className="flex-1 flex flex-col items-center justify-start pt-16 p-10 animate-in fade-in duration-300 bg-[#050505] min-h-screen text-emerald-50 relative overflow-y-auto scrollbar-small">
+      <div className="flex-1 flex flex-col items-center justify-start pt-16 p-10 animate-in fade-in duration-300 bg-[#050505] min-h-screen text-emerald-50 relative overflow-y-auto scrollbar-small pb-24">
         <div className="w-full max-w-6xl flex flex-col items-center">
           <div className="flex flex-col items-center text-center mb-16">
             <div className="p-4 bg-emerald-500/10 rounded-2xl border border-emerald-500/30 mb-6 inline-block">
@@ -183,7 +183,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
                 className="w-55 h-110 bg-black border-8 border-zinc-900 rounded-[3rem] relative flex flex-col p-2 group hover:border-emerald-500/50 transition-all duration-500 shadow-2xl hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]"
               >
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-zinc-900 rounded-full z-20 group-hover:bg-emerald-900/50 transition-colors"></div>
-                <div className="flex-1 bg-linear-to-b from-zinc-900 to-black rounded-[2.2rem] overflow-hidden flex flex-col items-center justify-center p-6 relative">
+                <div className="flex-1 bg-gradient-to-b from-zinc-900 to-black rounded-[2.2rem] overflow-hidden flex flex-col items-center justify-center p-6 relative">
                   <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/10 transition-colors duration-500"></div>
                   <RiSmartphoneLine
                     size={64}
@@ -210,16 +210,10 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
                 <RiAddLine size={32} />
               </div>
               <span className="text-xs font-bold text-zinc-500 group-hover:text-emerald-400 tracking-widest uppercase">
-                CONNECT MOBILE
+                NEW DEVICE
               </span>
             </button>
           </div>
-
-          {errorMsg && (
-            <div className="mt-10 p-4 bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-xs rounded-xl">
-              {errorMsg}
-            </div>
-          )}
         </div>
       </div>
     )
@@ -227,23 +221,25 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
 
   if (status !== 'connected' && uiMode === 'manual') {
     return (
-      <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 p-6 animate-in fade-in duration-300 bg-[#050505] min-h-screen text-emerald-50">
-        <div className="w-full lg:w-1/3 max-w-sm flex flex-col gap-4">
+      // Changed to items-start, added overflow-y-auto and pb-24 for robust scrolling and padding
+      <div className="flex-1 flex flex-col lg:flex-row items-start justify-center gap-8 p-6 md:p-12 animate-in fade-in duration-300 bg-[#050505] min-h-[100dvh] overflow-y-auto text-emerald-50 pb-24">
+        {/* Left Column: Connection Form */}
+        <div className="w-full lg:w-1/3 max-w-md flex flex-col gap-6 shrink-0">
           <div className="p-6 bg-black border border-emerald-900/40 rounded-2xl shadow-lg flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-emerald-950/40 rounded-xl border border-emerald-400/30">
                 <FaAndroid className="text-emerald-400 text-2xl" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white tracking-wide">Connect Device</h2>
-                <p className="text-[10px] text-emerald-400/70 font-mono">WIRELESS ADB</p>
+                <h2 className="text-lg font-bold text-white tracking-wide">Device Uplink</h2>
+                <p className="text-[10px] text-emerald-400/70 font-mono">TCP/IP CONFIGURATION</p>
               </div>
             </div>
 
             {deviceHistory.length > 0 && (
               <button
                 onClick={() => setUiMode('history')}
-                className="text-[10px] font-bold tracking-widest text-emerald-500 hover:text-emerald-300 hover:bg-emerald-500/10 uppercase px-3 py-1.5 border border-emerald-500/30 rounded-lg transition-all"
+                className="text-[10px] font-bold tracking-widest text-emerald-500 hover:text-emerald-300 hover:bg-emerald-500/10 uppercase px-3 py-1.5 border border-emerald-500/30 rounded-lg transition-all shrink-0 ml-2"
               >
                 ARCHIVE
               </button>
@@ -251,42 +247,42 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
           </div>
 
           <div
-            className={`${glassPanel || 'bg-zinc-950'} p-6 border border-emerald-900/40 rounded-2xl shadow-lg flex flex-col gap-5`}
+            className={`${glassPanel || 'bg-zinc-950'} p-8 border border-emerald-900/40 rounded-2xl shadow-lg flex flex-col gap-6`}
           >
             {errorMsg && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-xs rounded-lg font-mono">
+              <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-xs rounded-lg font-mono leading-relaxed">
                 {errorMsg}
               </div>
             )}
 
             <div>
-              <label className="text-xs font-bold text-emerald-400/80 tracking-wide mb-2 block">
-                IP Address
+              <label className="text-xs font-bold text-emerald-400/80 tracking-wide mb-3 block">
+                Target IP Address
               </label>
-              <div className="flex items-center bg-black border border-emerald-900/50 rounded-lg px-4 py-3 focus-within:border-emerald-400 transition-all">
-                <RiWifiLine className="text-emerald-400 mr-3" size={18} />
+              <div className="flex items-center bg-black border border-emerald-900/50 rounded-xl px-5 py-4 focus-within:border-emerald-400 transition-all">
+                <RiWifiLine className="text-emerald-400 mr-3" size={20} />
                 <input
                   type="text"
                   value={ip}
                   onChange={(e) => setIp(e.target.value)}
                   placeholder="192.168.1.xxx"
-                  className="bg-transparent border-none outline-none text-sm text-emerald-400 w-full font-mono placeholder:text-emerald-900"
+                  className="bg-transparent border-none outline-none text-base text-emerald-400 w-full font-mono placeholder:text-emerald-900/50"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-emerald-400/80 tracking-wide mb-2 block">
-                Port
+              <label className="text-xs font-bold text-emerald-400/80 tracking-wide mb-3 block">
+                Target Port
               </label>
-              <div className="flex items-center bg-black border border-emerald-900/50 rounded-lg px-4 py-3 focus-within:border-emerald-400 transition-all">
-                <RiLinkM className="text-emerald-400 mr-3" size={18} />
+              <div className="flex items-center bg-black border border-emerald-900/50 rounded-xl px-5 py-4 focus-within:border-emerald-400 transition-all">
+                <RiLinkM className="text-emerald-400 mr-3" size={20} />
                 <input
                   type="text"
                   value={port}
                   onChange={(e) => setPort(e.target.value)}
                   placeholder="5555"
-                  className="bg-transparent border-none outline-none text-sm text-emerald-400 w-full font-mono placeholder:text-emerald-900"
+                  className="bg-transparent border-none outline-none text-base text-emerald-400 w-full font-mono placeholder:text-emerald-900/50"
                 />
               </div>
             </div>
@@ -294,21 +290,108 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
             <button
               onClick={handleManualConnect}
               disabled={status === 'connecting'}
-              className="w-full py-3 bg-emerald-950 border border-emerald-400/50 hover:bg-emerald-400 text-emerald-400 hover:text-black font-bold rounded-lg tracking-wide transition-all duration-300"
+              className="w-full mt-4 py-5 bg-emerald-950 border border-emerald-400/50 hover:bg-emerald-400 text-emerald-400 hover:text-black font-bold rounded-xl tracking-widest transition-all duration-300 uppercase text-sm"
             >
-              {status === 'connecting' ? 'INITIALIZING LINK...' : 'CONNECT SECURELY'}
+              {status === 'connecting' ? 'INITIALIZING LINK...' : 'ESTABLISH CONNECTION'}
             </button>
           </div>
         </div>
 
-        <div className="w-full lg:w-1/3 flex justify-center py-4">
-          <div className="w-full max-w-75 h-150 bg-zinc-950 rounded-[3rem] border-10 border-zinc-800 shadow-2xl relative overflow-hidden flex flex-col">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-zinc-800 rounded-b-xl z-20"></div>
-            <div className="flex-1 bg-linear-to-b from-emerald-950/30 to-black p-6 flex flex-col items-center justify-center">
-              <RiSmartphoneLine size={64} className="text-emerald-900 animate-pulse" />
-              <p className="text-[10px] font-mono text-emerald-900 mt-4 tracking-widest">
-                AWAITING TARGET
-              </p>
+        {/* Right Column: Setup Protocol Guide */}
+        <div className="w-full lg:w-1/2 max-w-2xl flex flex-col">
+          <div className="bg-black border border-emerald-900/40 rounded-2xl shadow-lg p-8 md:p-10 flex flex-col relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+              <RiTerminalLine size={240} />
+            </div>
+
+            <div className="flex items-center gap-4 mb-8 relative z-10">
+              <RiTerminalBoxLine className="text-emerald-500" size={28} />
+              <h3 className="text-base font-bold tracking-[0.2em] text-emerald-400 uppercase">
+                First-Time Setup Protocol
+              </h3>
+            </div>
+
+            <p className="text-sm text-zinc-400 font-mono mb-10 leading-relaxed relative z-10 pr-4">
+              Wireless ADB requires the device's TCP/IP daemon to be initialized via USB first.
+              Follow these steps to prepare your device for remote uplink.
+            </p>
+
+            <div className="space-y-8 relative z-10">
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400 shrink-0">
+                    1
+                  </div>
+                  <div className="w-px h-full bg-emerald-900/30 my-2"></div>
+                </div>
+                <div className="pb-3">
+                  <h4 className="text-sm font-bold text-white tracking-wider mb-2">
+                    ENABLE USB DEBUGGING
+                  </h4>
+                  <p className="text-xs font-mono text-zinc-500 leading-relaxed">
+                    Go to{' '}
+                    <span className="text-emerald-400/70">Settings &gt; Developer Options</span> on
+                    your Android and enable USB Debugging. (If hidden, tap "Build Number" 7 times in
+                    About Phone).
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400 shrink-0">
+                    2
+                  </div>
+                  <div className="w-px h-full bg-emerald-900/30 my-2"></div>
+                </div>
+                <div className="pb-3">
+                  <h4 className="text-sm font-bold text-white tracking-wider mb-2">
+                    PHYSICAL LINK
+                  </h4>
+                  <p className="text-xs font-mono text-zinc-500 leading-relaxed">
+                    Connect the device to this PC via USB cable. Accept the "Allow USB debugging"
+                    prompt on your phone's screen.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-8 h-8 rounded-full bg-emerald-950 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400 shrink-0">
+                    3
+                  </div>
+                  <div className="w-px h-full bg-emerald-900/30 my-2"></div>
+                </div>
+                <div className="pb-3 w-full">
+                  <h4 className="text-sm font-bold text-white tracking-wider mb-2">
+                    START THE DAEMON
+                  </h4>
+                  <p className="text-xs font-mono text-zinc-500 leading-relaxed mb-3">
+                    Open your PC's Command Prompt / Terminal and execute the following command to
+                    open the port:
+                  </p>
+                  <code className="block w-full bg-zinc-950 border border-emerald-900/30 text-emerald-400 text-sm p-4 rounded-xl tracking-widest font-mono">
+                    adb tcpip 5555
+                  </code>
+                </div>
+              </div>
+
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] flex items-center justify-center text-xs font-bold text-black shrink-0">
+                    4
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-wider mb-2">
+                    SEVER CABLE & CONNECT
+                  </h4>
+                  <p className="text-xs font-mono text-zinc-500 leading-relaxed">
+                    Disconnect the USB cable. Find your phone's Wi-Fi IP address, enter it in the
+                    form to the left, and establish the connection.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -317,7 +400,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-10 p-10 animate-in fade-in duration-500 bg-[#0a0a0a] min-h-screen">
+    <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-10 p-10 animate-in fade-in duration-500 bg-[#0a0a0a] min-h-screen overflow-y-auto">
       <div className="w-1/4 flex flex-col">
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/30">
@@ -391,7 +474,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
       </div>
 
       <div className="w-1/3 flex justify-center relative">
-        <div className="w-full max-w-[320px] h-162.5 bg-black rounded-[3rem] border-12 border-[#1a1a1a] shadow-[0_0_50px_rgba(168,85,247,0.1)] relative overflow-hidden flex flex-col">
+        <div className="w-full max-w-[320px] h-[650px] bg-black rounded-[3rem] border-[12px] border-[#1a1a1a] shadow-[0_0_50px_rgba(168,85,247,0.1)] relative overflow-hidden flex flex-col">
           <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-20 flex items-center justify-end px-3 gap-2 shadow-md">
             <div className="w-2 h-2 rounded-full bg-purple-500/50"></div>
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
@@ -401,7 +484,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
         </div>
       </div>
 
-      <div className="w-1/4 flex flex-col h-162.5 relative">
+      <div className="w-1/4 flex flex-col h-[650px] relative">
         <div className="bg-[#111] border border-white/5 rounded-2xl p-6 flex flex-col h-full shadow-lg">
           <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/5">
             <div className="p-2 bg-purple-500/10 rounded-lg">
