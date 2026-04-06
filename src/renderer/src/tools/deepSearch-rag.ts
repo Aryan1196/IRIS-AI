@@ -17,7 +17,6 @@ export const runDeepResearch = async (query: string): Promise<string> => {
           detail: { success: true, summary: result.summary }
         })
       )
-      // Removed the URL reference since Notion is gone
       return `✅ Research complete. Here is a summary of the data so you can inform the user: ${result.summary}`
     }
 
@@ -28,4 +27,3 @@ export const runDeepResearch = async (query: string): Promise<string> => {
   }
 }
 
-// ❌ runReadNotion has been completely removed.
