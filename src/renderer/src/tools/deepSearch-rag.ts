@@ -31,6 +31,7 @@ export const runDeepResearch = async (query: string): Promise<string> => {
   }
 }
 
+
 export const runReadNotion = async (): Promise<string> => {
   try {
     const notionKey = localStorage.getItem('iris_notion_api_key') || ''
