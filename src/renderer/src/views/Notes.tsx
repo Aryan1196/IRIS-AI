@@ -190,7 +190,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
                 placeholder="ENTER NOTE TITLE..."
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                className="bg-transparent border-none outline-none text-lg font-bold text-white placeholder-zinc-600 w-full tracking-wider"
+                className="bg-transparent border-none outline-none text-lg font-bold text-white placeholder-zinc-500 w-full tracking-wider"
                 autoFocus
               />
               <div className="flex gap-2">
@@ -207,7 +207,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
               placeholder="Write your note in Markdown..."
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none resize-none text-sm font-mono text-zinc-100 placeholder-zinc-700 leading-relaxed p-2 scrollbar-small"
+              className="flex-1 bg-transparent border-none outline-none resize-none text-sm font-mono text-zinc-50 placeholder-zinc-500 leading-relaxed p-2 scrollbar-small"
             />
 
             <div className="flex justify-end pt-4">
