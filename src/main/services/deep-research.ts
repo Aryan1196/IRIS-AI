@@ -5,6 +5,7 @@ import Groq from 'groq-sdk'
 export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) {
   ipcMain.handle('execute-deep-research', async (event, { query, tavilyKey, groqKey }) => {
     try {
+      // 1. Removed Notion keys from the validation
       if (!tavilyKey || !groqKey) {
         throw new Error('Missing API Keys. Please configure Tavily and Groq in the Command Center.')
       }
@@ -15,6 +16,7 @@ export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) 
         totalFound: 1
       })
 
+      // 2. Fetch data via Tavily
       const tvly = tavily({ apiKey: tavilyKey })
       const tavilyData = await tvly.search(query, {
         searchDepth: 'advanced',
@@ -31,6 +33,7 @@ export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) 
         totalFound: 2
       })
 
+      // 3. Synthesize with Groq (Prompt updated to just ask for a markdown summary)
       const groq = new Groq({ apiKey: groqKey })
       const prompt = `
         You are an elite research analyst. Answer: "${query}".
@@ -55,6 +58,7 @@ export default function registerDeepResearch({ ipcMain }: { ipcMain: IpcMain }) 
         totalFound: 3
       })
 
+      // 4. Return the summary directly instead of pushing to Notion
       return { success: true, summary: extractedSummary }
     } catch (error) {
       return { success: false, error: String(error) }
