@@ -69,7 +69,6 @@ export default function ResearchWidget() {
         y: -10,
         duration: 0.2,
         onComplete: () => {
-          // Changed "Indexed" to "Synthesized"
           setStatusText(success ? 'RAG Pipeline Complete & Synthesized.' : 'Pipeline Terminated.')
           gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.3 })
         }
@@ -138,7 +137,6 @@ export default function ResearchWidget() {
             ) : statusText.includes('Llama') ? (
               <Cpu className="w-5 h-5 text-purple-500 animate-pulse" />
             ) : (
-              // Changed from Database to FileText to represent the Markdown Summary
               <FileText className="w-5 h-5 text-emerald-500" />
             )}
             <div ref={textRef} className="text-sm text-gray-300 font-mono tracking-wider">
