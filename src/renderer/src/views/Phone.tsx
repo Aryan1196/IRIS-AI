@@ -27,7 +27,7 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
   const [uiMode, setUiMode] = useState<'history' | 'manual'>('history')
   const [errorMsg, setErrorMsg] = useState('')
   const [deviceHistory, setDeviceHistory] = useState<any[]>([])
-  const [copied, setCopied] = useState(false) // Added state for the copy button
+  const [copied, setCopied] = useState(false) 
 
   const screenRef = useRef<HTMLImageElement>(null)
   const isStreaming = useRef(false)
