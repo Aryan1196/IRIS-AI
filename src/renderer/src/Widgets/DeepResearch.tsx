@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-import { Globe, Database, Cpu, CheckCircle2, Network } from 'lucide-react'
+import { Globe, FileText, Cpu, CheckCircle2, Network } from 'lucide-react'
 
 gsap.registerPlugin(useGSAP)
 
@@ -69,7 +69,7 @@ export default function ResearchWidget() {
         y: -10,
         duration: 0.2,
         onComplete: () => {
-          setStatusText(success ? 'RAG Pipeline Complete & Indexed.' : 'Pipeline Terminated.')
+          setStatusText(success ? 'RAG Pipeline Complete & Synthesized.' : 'Pipeline Terminated.')
           gsap.to(textRef.current, { opacity: 1, y: 0, duration: 0.3 })
         }
       })
@@ -137,7 +137,7 @@ export default function ResearchWidget() {
             ) : statusText.includes('Llama') ? (
               <Cpu className="w-5 h-5 text-purple-500 animate-pulse" />
             ) : (
-              <Database className="w-5 h-5 text-emerald-500" />
+              <FileText className="w-5 h-5 text-emerald-500" />
             )}
             <div ref={textRef} className="text-sm text-gray-300 font-mono tracking-wider">
               {statusText}

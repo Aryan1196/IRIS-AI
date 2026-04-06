@@ -116,7 +116,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
   }
 
   return (
-    <div className="flex-1 bg-gray-900/70 h-full grid grid-cols-12 gap-6 p-6 animate-in fade-in zoom-in duration-300">
+    <div className="flex-1 bg-white/5 h-full grid grid-cols-12 gap-6 p-6 animate-in fade-in zoom-in duration-300">
       <div className="col-span-4 flex flex-col gap-4 h-full overflow-hidden">
         <div className="flex items-center justify-between pb-2 border-b border-white/10">
           <div className="flex items-center gap-2 text-zinc-100">
@@ -138,7 +138,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
 
         <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-small">
           {notes.length === 0 ? (
-            <div className="text-center text-zinc-600 text-xs mt-10">
+            <div className="text-center text-zinc-400 text-xs mt-10">
               <p>No memories saved.</p>
               <p className="mt-2 opacity-50">Click + or ask IRIS.</p>
             </div>
@@ -158,7 +158,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
               >
                 <div className="overflow-hidden">
                   <h3
-                    className={`text-xs font-bold truncate ${selectedNote?.filename === note.filename && !isEditorOpen ? 'text-emerald-100' : 'text-zinc-300'}`}
+                    className={`text-xs font-bold truncate ${selectedNote?.filename === note.filename && !isEditorOpen ? 'text-emerald-100' : 'text-zinc-200'}`}
                   >
                     {note.title.toUpperCase()}
                   </h3>
@@ -190,7 +190,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
                 placeholder="ENTER NOTE TITLE..."
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                className="bg-transparent border-none outline-none text-lg font-bold text-white placeholder-zinc-600 w-full tracking-wider"
+                className="bg-transparent border-none outline-none text-lg font-bold text-white placeholder-zinc-500 w-full tracking-wider"
                 autoFocus
               />
               <div className="flex gap-2">
@@ -207,7 +207,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
               placeholder="Write your note in Markdown..."
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none resize-none text-sm font-mono text-zinc-300 placeholder-zinc-700 leading-relaxed p-2 scrollbar-small"
+              className="flex-1 bg-transparent border-none outline-none resize-none text-sm font-mono text-zinc-50 placeholder-zinc-500 leading-relaxed p-2 scrollbar-small"
             />
 
             <div className="flex justify-end pt-4">
@@ -228,7 +228,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
                 <span className="text-xs font-bold tracking-wider">{selectedNote.title}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[9px] font-mono text-zinc-600 bg-black/20 px-2 py-1 rounded">
+                <span className="text-[9px] font-mono text-zinc-400 bg-black/20 px-2 py-1 rounded">
                   READ ONLY
                 </span>
                 <button
@@ -250,7 +250,7 @@ const NotesView = ({ glassPanel }: { glassPanel?: string }) => {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-zinc-700 gap-4">
+          <div className="flex-1 flex flex-col items-center justify-center text-zinc-200 gap-4">
             <RiFileTextLine size={48} className="opacity-20" />
             <span className="text-xs tracking-widest opacity-50">
               SELECT A DATA NODE OR CREATE NEW

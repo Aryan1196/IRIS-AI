@@ -39,7 +39,6 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
   const [geminiKey, setGeminiKey] = useState(localStorage.getItem('iris_custom_api_key') || '')
   const [groqKey, setGroqKey] = useState(localStorage.getItem('iris_groq_api_key') || '')
   const [hfKey, setHfKey] = useState(localStorage.getItem('iris_hf_api_key') || '')
-  const [notionKey, setNotionKey] = useState(localStorage.getItem('iris_notion_api_key') || '')
   const [tailvyKey, setTailvyKey] = useState(localStorage.getItem('iris_tailvy_api_key') || '')
 
   const [isSecurityUnlocked, setIsSecurityUnlocked] = useState(false)
@@ -95,7 +94,6 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
     localStorage.setItem('iris_custom_api_key', geminiKey)
     localStorage.setItem('iris_groq_api_key', groqKey)
     localStorage.setItem('iris_hf_api_key', hfKey)
-    localStorage.setItem('iris_notion_api_key', notionKey)
     localStorage.setItem('iris_tailvy_api_key', tailvyKey)
 
     if (window.electron?.ipcRenderer) {
@@ -104,8 +102,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
           groqKey,
           geminiKey
         })
-      } catch (e) {
-      }
+      } catch (e) {}
     }
 
     alert(
@@ -398,7 +395,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 md:col-span-2">
                       <label className="text-[10px] text-zinc-400 font-mono tracking-widest uppercase flex items-center gap-2">
                         <RiCloudLine size={14} /> Hugging Face Vision
                       </label>
@@ -408,21 +405,6 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
                           value={hfKey}
                           onChange={(e) => setHfKey(e.target.value)}
                           placeholder="hf_..."
-                          className="bg-transparent border-none outline-none text-sm font-mono text-zinc-100 w-full placeholder:text-zinc-700"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] text-zinc-400 font-mono tracking-widest uppercase flex items-center gap-2">
-                        <RiDatabase2Line size={14} /> Notion Integrations
-                      </label>
-                      <div className={inputContainerClass}>
-                        <input
-                          type="password"
-                          value={notionKey}
-                          onChange={(e) => setNotionKey(e.target.value)}
-                          placeholder="secret_..."
                           className="bg-transparent border-none outline-none text-sm font-mono text-zinc-100 w-full placeholder:text-zinc-700"
                         />
                       </div>
