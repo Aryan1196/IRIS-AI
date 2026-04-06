@@ -151,7 +151,6 @@ const PhoneView = ({ glassPanel }: { glassPanel?: string }) => {
     }
   }
 
-  // Handle the copy action for the daemon command
   const handleCopyCommand = () => {
     navigator.clipboard.writeText('adb tcpip 5555')
     setCopied(true)
