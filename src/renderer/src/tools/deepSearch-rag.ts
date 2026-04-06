@@ -23,6 +23,7 @@ export const runDeepResearch = async (query: string): Promise<string> => {
     window.dispatchEvent(new CustomEvent('deep-research-done', { detail: { success: false } }))
     return `❌ Research failed: ${result.error}`
   } catch (error) {
+    alert(`System failure during deep research: ${String(error)}`)
     return `❌ System failure: ${String(error)}`
   }
 }
