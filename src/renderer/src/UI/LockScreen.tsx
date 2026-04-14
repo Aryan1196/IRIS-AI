@@ -142,7 +142,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
 
     setTimeout(() => {
       onUnlock()
-    }, 3500)
+    }, 3300)
   }
 
   const startScanning = (isFaceSetup: boolean) => {
