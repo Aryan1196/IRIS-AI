@@ -137,8 +137,8 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
       setDecryptProgress(progress)
     }, 150)
 
-    setTimeout(() => setAiStatus('ESTABLISHING NEURAL UPLINK...'), 1200)
-    setTimeout(() => setAiStatus('WORKSPACE READY. REDIRECTING.'), 2200)
+    setTimeout(() => setAiStatus('ESTABLISHING NEURAL UPLINK...'), 1500)
+    setTimeout(() => setAiStatus('WORKSPACE READY. REDIRECTING.'), 2500)
 
     setTimeout(() => {
       onUnlock()
