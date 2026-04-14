@@ -55,7 +55,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
   const [enrollStatus, setEnrollStatus] = useState('')
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const [appVersion, setAppVersion] = useState('1.0.0')
+  const [appVersion, setAppVersion] = useState('1.1.5')
   const [updateStatus, setUpdateStatus] = useState<
     'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'error'
   >('idle')
