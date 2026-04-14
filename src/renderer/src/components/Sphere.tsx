@@ -51,7 +51,6 @@ const CustomParticleSphere = ({ count = 3000 }) => {
     if (irisService.analyser) {
       irisService.analyser.getByteFrequencyData(dataArray)
 
-      // OPTIMIZATION: A standard for-loop is significantly faster than .reduce()
       let sum = 0
       const len = dataArray.length
       for (let i = 0; i < len; i++) {
@@ -60,13 +59,11 @@ const CustomParticleSphere = ({ count = 3000 }) => {
       volume = sum / len / 128
     }
 
-    // OPTIMIZATION: Mutate existing color object instead of creating new ones
     colorTarget.lerpColors(colorStart, colorEnd, volume)
     ;(mesh.current.material as THREE.PointsMaterial).color.copy(colorTarget)
 
     const currentPos = mesh.current.geometry.attributes.position.array as Float32Array
 
-    // Fast-path mutation loop
     for (let i = 0; i < count; i++) {
       const ix = i * 3
       const iy = i * 3 + 1
