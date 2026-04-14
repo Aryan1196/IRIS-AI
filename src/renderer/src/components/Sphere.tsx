@@ -17,7 +17,7 @@ const CustomParticleSphere = ({ count = 5000 }) => {
       const x = Math.random() * 2 - 1
       const y = Math.random() * 2 - 1
       const z = Math.random() * 2 - 1
-
+      
       const vector = new THREE.Vector3(x, y, z)
       vector.normalize().multiplyScalar(2)
 
