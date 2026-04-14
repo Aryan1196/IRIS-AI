@@ -8,7 +8,8 @@ import {
   screen,
   session,
   safeStorage,
-  systemPreferences
+  systemPreferences,
+  dialog // <-- ADDED DIALOG HERE
 } from 'electron'
 import path, { join } from 'path'
 import fs from 'fs'
@@ -154,7 +155,36 @@ function toggleOverlayMode() {
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
+
   autoUpdater.checkForUpdatesAndNotify()
+
+  autoUpdater.on('update-available', (info) => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Found',
+      message: `Neural Core Update Found: v${info.version}. Downloading in background...`
+    })
+  })
+
+  autoUpdater.on('error', (err) => {
+    dialog.showErrorBox(
+      'Auto-Updater Error',
+      err == null ? 'unknown error' : (err.stack || err).toString()
+    )
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    dialog
+      .showMessageBox({
+        type: 'info',
+        title: 'Update Ready',
+        message: 'New version downloaded! The system will now restart to apply the patch.',
+        buttons: ['Execute Restart']
+      })
+      .then(() => {
+        autoUpdater.quitAndInstall()
+      })
+  })
 
   session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
     const allowedPermissions = ['media', 'audioCapture', 'videoCapture', 'desktopVideoCapture']
