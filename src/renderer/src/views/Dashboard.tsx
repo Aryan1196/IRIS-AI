@@ -309,7 +309,7 @@ export default function DashboardView({
           className={`${glassPanel} h-32 shrink-0 p-4 flex flex-col justify-between relative overflow-hidden`}
         >
           <div
-            className={`absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 bg-linear-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
           />
 
           <div className="flex items-center justify-between border-b border-white/10 pb-2 relative z-10">
