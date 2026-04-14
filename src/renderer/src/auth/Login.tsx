@@ -159,7 +159,7 @@ export default function LoginPage() {
               <button
                 onClick={handleGoogleLogin}
                 disabled={!isReady}
-                className={`relative flex w-full items-center justify-center gap-3 py-4 px-6 rounded-xl bg-zinc-950 border border-white/10 text-white transition-all font-bold text-xs tracking-widest uppercase shadow-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:bg-black hover:border-emerald-500/50'}`}
+                className={`relative flex w-full items-center justify-center gap-3 py-4 px-6 rounded-xl bg-black border border-white/40 text-white transition-all duration-200 ease-in-out font-bold text-xs tracking-widest uppercase shadow-lg ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:text-black hover:border-emerald-500/90 cursor-pointer'}`}
               >
                 <FcGoogle className="w-5 h-5" />
                 Initialize Link
