@@ -3,14 +3,11 @@ import { useRef, useMemo } from 'react'
 import * as THREE from 'three'
 import { irisService } from '@renderer/services/Iris-voice-ai'
 
-// REDUCED DEFAULT: 3000 particles looks identical to 5000 but saves 40% CPU load
 const CustomParticleSphere = ({ count = 3000 }) => {
   const mesh = useRef<THREE.Points>(null)
 
-  // Memoize static arrays so they are never recreated
   const dataArray = useMemo(() => new Uint8Array(128), [])
 
-  // Pre-instantiate colors OUTSIDE the loop to prevent Garbage Collection stutters
   const colorStart = useMemo(() => new THREE.Color('#33db12'), [])
   const colorEnd = useMemo(() => new THREE.Color('#FFFFFF'), [])
   const colorTarget = useMemo(() => new THREE.Color(), [])
