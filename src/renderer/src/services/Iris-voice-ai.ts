@@ -1,10 +1,5 @@
 import { handleNavigation, handleOpenMap } from '@renderer/tools/Earth-View'
-import {
-  floatTo16BitPCM,
-  base64ToFloat32,
-  downsampleTo16000,
-  float32ToBase64PCM
-} from '../utils/audioUtils'
+import { base64ToFloat32, downsampleTo16000, float32ToBase64PCM } from '../utils/audioUtils'
 import { getRunningApps } from './get-apps'
 import { getHistory, retrieveCoreMemory, saveCoreMemory, saveMessage } from './iris-ai-brain'
 import { getAllApps, getSystemStatus } from './system-info'
