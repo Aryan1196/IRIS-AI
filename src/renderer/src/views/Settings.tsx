@@ -18,17 +18,22 @@ import {
   RiBrainLine,
   RiCloudLine,
   RiCpuLine,
-  RiDatabase2Line
+  RiTerminalWindowLine,
+  RiRefreshLine,
+  RiDownloadCloud2Line,
+  RiRocketLine
 } from 'react-icons/ri'
 
 interface SettingsProps {
   isSystemActive: boolean
 }
 
-type TabType = 'general' | 'keys' | 'security'
+// Reordered so 'updates' is front and center
+type TabType = 'updates' | 'general' | 'keys' | 'security'
 
 const SettingsView = ({ isSystemActive }: SettingsProps) => {
-  const [activeTab, setActiveTab] = useState<TabType>('general')
+  // Set default tab to updates
+  const [activeTab, setActiveTab] = useState<TabType>('updates')
 
   const [voice, setVoice] = useState<'MALE' | 'FEMALE'>(
     (localStorage.getItem('iris_voice_profile') as 'MALE' | 'FEMALE') || 'MALE'
@@ -52,6 +57,15 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
   const [enrollStatus, setEnrollStatus] = useState('')
   const videoRef = useRef<HTMLVideoElement>(null)
 
+  // --- AUTO-UPDATER STATE ---
+  const [appVersion, setAppVersion] = useState('1.0.0')
+  const [updateStatus, setUpdateStatus] = useState<
+    'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'error'
+  >('idle')
+  const [updateVersion, setUpdateVersion] = useState('')
+  const [updateNotes, setUpdateNotes] = useState('No new updates detected.')
+  const [downloadProgress, setDownloadProgress] = useState(0)
+
   useEffect(() => {
     if (window.electron?.ipcRenderer) {
       window.electron.ipcRenderer.invoke('get-personality').then((res) => {
@@ -60,8 +74,43 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
       window.electron.ipcRenderer
         .invoke('check-vault-status')
         .then((res) => setFaceCount(res?.faceCount || 0))
+
+      // Get current app version on load
+      window.electron.ipcRenderer.invoke('get-app-version').then((v) => setAppVersion(v))
+
+      // Listen for Updater Events
+      window.electron.ipcRenderer.on('updater-event', (_e, { status, data, error }) => {
+        if (status === 'checking') setUpdateStatus('checking')
+        if (status === 'available') {
+          setUpdateStatus('available')
+          setUpdateVersion(data.version)
+          setUpdateNotes(data.releaseNotes || 'Bug fixes and performance improvements.')
+        }
+        if (status === 'not-available') {
+          setUpdateStatus('idle')
+          setUpdateNotes('System is up to date.')
+        }
+        if (status === 'downloading') {
+          setUpdateStatus('downloading')
+          setDownloadProgress(Math.round(data.percent))
+        }
+        if (status === 'downloaded') setUpdateStatus('ready')
+        if (status === 'error') {
+          setUpdateStatus('error')
+          setUpdateNotes(`Error: ${error}`)
+        }
+      })
+    }
+    return () => {
+      if (window.electron?.ipcRenderer)
+        window.electron.ipcRenderer.removeAllListeners('updater-event')
     }
   }, [])
+
+  // --- UPDATER ACTIONS ---
+  const checkForUpdates = () => window.electron.ipcRenderer.invoke('check-for-updates')
+  const downloadUpdate = () => window.electron.ipcRenderer.invoke('download-update')
+  const installUpdate = () => window.electron.ipcRenderer.invoke('install-update')
 
   const handleVoiceChange = (v: 'MALE' | 'FEMALE') => {
     if (isSystemActive) return
@@ -98,13 +147,9 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
 
     if (window.electron?.ipcRenderer) {
       try {
-        await window.electron.ipcRenderer.invoke('secure-save-keys', {
-          groqKey,
-          geminiKey
-        })
+        await window.electron.ipcRenderer.invoke('secure-save-keys', { groqKey, geminiKey })
       } catch (e) {}
     }
-
     alert(
       'All Neural Uplinks (API Keys) secured locally and in OS Vault. Restart AI modules to apply.'
     )
@@ -139,9 +184,9 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
     setEnrollStatus('INITIALIZING CAMERA...')
     try {
       await Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+        faceapi.nets.ssdMobilenetv1.loadFromUri('./models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('./models')
       ])
 
       const stream = await navigator.mediaDevices.getUserMedia({ video: true })
@@ -208,34 +253,29 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
             </div>
           </div>
 
+          {/* Reordered Tabs to put SYSTEM first */}
           <div className="flex bg-[#0a0a0c] p-1 rounded-xl border border-white/10 w-full md:w-fit shadow-lg overflow-x-auto scrollbar-none">
             <button
+              onClick={() => setActiveTab('updates')}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${activeTab === 'updates' ? 'bg-white text-black shadow-md' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
+            >
+              <RiTerminalWindowLine size={16} /> SYSTEM
+            </button>
+            <button
               onClick={() => setActiveTab('general')}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${
-                activeTab === 'general'
-                  ? 'bg-white text-black shadow-md'
-                  : 'text-zinc-500 hover:text-white hover:bg-white/5'
-              }`}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${activeTab === 'general' ? 'bg-white text-black shadow-md' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
             >
               <RiSettings4Line size={16} /> GENERAL
             </button>
             <button
               onClick={() => setActiveTab('keys')}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${
-                activeTab === 'keys'
-                  ? 'bg-white text-black shadow-md'
-                  : 'text-zinc-500 hover:text-white hover:bg-white/5'
-              }`}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${activeTab === 'keys' ? 'bg-white text-black shadow-md' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
             >
               <RiPlugLine size={16} /> API KEYS
             </button>
             <button
               onClick={() => setActiveTab('security')}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${
-                activeTab === 'security'
-                  ? 'bg-white text-black shadow-md'
-                  : 'text-zinc-500 hover:text-white hover:bg-white/5'
-              }`}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold tracking-widest rounded-lg transition-all duration-300 ${activeTab === 'security' ? 'bg-white text-black shadow-md' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
             >
               <RiShieldKeyholeLine size={16} /> SECURITY
             </button>
@@ -244,6 +284,102 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
 
         <div className="relative min-h-125 pb-12 mt-2">
           <AnimatePresence mode="wait">
+            {/* --- TAB 1: SYSTEM UPDATES --- */}
+            {activeTab === 'updates' && (
+              <motion.div
+                key="updates"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 absolute w-full"
+              >
+                <div className={`${cardClass} md:col-span-1 border-emerald-500/20`}>
+                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                    <span className={titleClass}>
+                      <RiRocketLine className="text-emerald-400" size={18} /> OS Firmware
+                    </span>
+                    <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded font-mono font-bold tracking-widest">
+                      v{appVersion}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-4 items-center justify-center flex-1 py-4 text-center">
+                    {updateStatus === 'idle' || updateStatus === 'error' ? (
+                      <>
+                        <RiTerminalWindowLine size={48} className="text-zinc-700" />
+                        <p className="text-xs text-zinc-400 font-mono">Current build is stable.</p>
+                        <button
+                          onClick={checkForUpdates}
+                          className="mt-2 w-full py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold tracking-widest text-[11px] flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        >
+                          <RiRefreshLine size={16} /> CHECK FOR UPDATES
+                        </button>
+                      </>
+                    ) : updateStatus === 'checking' ? (
+                      <>
+                        <RiRefreshLine size={48} className="text-emerald-500 animate-spin" />
+                        <p className="text-xs text-emerald-400 font-mono animate-pulse">
+                          PINGING NEURAL NETWORK...
+                        </p>
+                      </>
+                    ) : updateStatus === 'available' ? (
+                      <>
+                        <RiDownloadCloud2Line size={48} className="text-cyan-400" />
+                        <p className="text-xs text-cyan-400 font-mono">
+                          NEW BUILD FOUND: v{updateVersion}
+                        </p>
+                        <button
+                          onClick={downloadUpdate}
+                          className="mt-2 w-full py-3 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 text-cyan-400 hover:text-black font-bold tracking-widest text-[11px] flex items-center justify-center gap-2 transition-all border border-cyan-500/50 cursor-pointer"
+                        >
+                          <RiDownloadCloud2Line size={16} /> INITIALIZE DOWNLOAD
+                        </button>
+                      </>
+                    ) : updateStatus === 'downloading' ? (
+                      <div className="w-full flex flex-col gap-3">
+                        <div className="flex justify-between text-[10px] font-mono text-zinc-400">
+                          <span>DOWNLOADING PATCH...</span>
+                          <span>{downloadProgress}%</span>
+                        </div>
+                        <div className="w-full h-2 bg-black rounded-full overflow-hidden border border-white/10">
+                          <div
+                            className="h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] transition-all duration-300"
+                            style={{ width: `${downloadProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <RiRecordCircleLine size={48} className="text-emerald-400 animate-pulse" />
+                        <p className="text-xs text-emerald-400 font-mono">PATCH DOWNLOADED</p>
+                        <button
+                          onClick={installUpdate}
+                          className="mt-2 w-full py-3 rounded-lg bg-emerald-500 text-black font-bold tracking-widest text-[11px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] cursor-pointer"
+                        >
+                          <RiRocketLine size={16} /> EXECUTE RESTART
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className={`${cardClass} md:col-span-1`}>
+                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                    <span className={titleClass}>
+                      <RiTerminalWindowLine className="text-zinc-400" size={18} /> Patch Notes
+                    </span>
+                  </div>
+                  <div className="flex-1 bg-[#050505] border border-white/5 rounded-xl p-4 overflow-y-auto max-h-60 scrollbar-small">
+                    <pre className="text-[11px] font-mono text-zinc-400 whitespace-pre-wrap leading-relaxed">
+                      {updateNotes}
+                    </pre>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- TAB 2: GENERAL --- */}
             {activeTab === 'general' && (
               <motion.div
                 key="general"
@@ -342,6 +478,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
               </motion.div>
             )}
 
+            {/* --- TAB 3: API KEYS --- */}
             {activeTab === 'keys' && (
               <motion.div
                 key="keys"
@@ -438,6 +575,7 @@ const SettingsView = ({ isSystemActive }: SettingsProps) => {
               </motion.div>
             )}
 
+            {/* --- TAB 4: SECURITY --- */}
             {activeTab === 'security' && (
               <motion.div
                 key="security"
