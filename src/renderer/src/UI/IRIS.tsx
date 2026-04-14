@@ -111,7 +111,7 @@ const IRIS = (props: IrisProps) => {
           ))}
         </div>
 
-        <div className="flex items-center gap-6 text-[9px] font-mono font-bold opacity-60">
+        <div className="flex items-center gap-6 text-[11px] font-mono font-bold opacity-60">
           <div className="flex items-center gap-2 text-emerald-500">
             <RiWifiLine /> <span>LINKED</span>
           </div>
