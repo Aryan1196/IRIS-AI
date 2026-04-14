@@ -248,7 +248,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
               : 'from-emerald-900/5 via-[#030303] to-[#030303]'
         }`}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none mix-blend-screen opacity-50" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-size-[48px_48px] pointer-events-none mix-blend-screen opacity-50" />
 
       <div className="absolute top-0 w-full h-12 border-b border-white/5 bg-black/40 backdrop-blur-md flex items-center justify-between px-8 z-50 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
         <div className="flex items-center gap-6">
@@ -279,7 +279,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`z-10 flex flex-col items-center gap-8 p-10 w-[550px] rounded-[2rem] backdrop-blur-2xl border transition-all duration-700 ${
+        className={`z-10 flex flex-col items-center gap-8 p-10 w-137.5 rounded-4xl backdrop-blur-2xl border transition-all duration-700 ${
           error
             ? 'border-red-500/50 bg-red-950/10 shadow-[0_0_100px_rgba(239,68,68,0.2)]'
             : isAuthorized
@@ -327,7 +327,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           </div>
         </div>
 
-        <div className="h-[280px] flex items-center justify-center w-full relative">
+        <div className="h-70 flex items-center justify-center w-full relative">
           <AnimatePresence mode="wait">
             {isAuthorized && (
               <motion.div
@@ -380,7 +380,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
                 transition={{ duration: 0.3 }}
-                className={`relative flex items-center justify-center w-full h-full rounded-[1.5rem] border-[1px] overflow-hidden transition-all duration-500 bg-[#050505] ${
+                className={`relative flex items-center justify-center w-full h-full rounded-3xl border overflow-hidden transition-all duration-500 bg-[#050505] ${
                   error
                     ? 'border-red-500/50 shadow-[inset_0_0_50px_rgba(239,68,68,0.2)]'
                     : 'border-emerald-500/20 shadow-[inset_0_0_40px_rgba(16,185,129,0.05)]'
@@ -396,18 +396,18 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                   playsInline
                 />
 
-                <div className="absolute inset-0 pointer-events-none border-[1px] border-white/5 rounded-[1.5rem] m-2" />
+                <div className="absolute inset-0 pointer-events-none border border-white/5 rounded-3xl m-2" />
 
                 {isScanning && !error && (
                   <div className="absolute inset-0 pointer-events-none">
                     <div
                       ref={laserRef}
-                      className="absolute left-0 w-full h-[2px] bg-emerald-400 shadow-[0_0_20px_#34d399,0_0_40px_#34d399] z-20"
+                      className="absolute left-0 w-full h-0.5 bg-emerald-400 shadow-[0_0_20px_#34d399,0_0_40px_#34d399] z-20"
                     />
-                    <div className="absolute top-6 left-6 w-8 h-8 border-t-[2px] border-l-[2px] border-emerald-500/70" />
-                    <div className="absolute top-6 right-6 w-8 h-8 border-t-[2px] border-r-[2px] border-emerald-500/70" />
-                    <div className="absolute bottom-6 left-6 w-8 h-8 border-b-[2px] border-l-[2px] border-emerald-500/70" />
-                    <div className="absolute bottom-6 right-6 w-8 h-8 border-b-[2px] border-r-[2px] border-emerald-500/70" />
+                    <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-emerald-500/70" />
+                    <div className="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-emerald-500/70" />
+                    <div className="absolute bottom-6 left-6 w-8 h-8 border-b-2 border-l-2 border-emerald-500/70" />
+                    <div className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-emerald-500/70" />
                   </div>
                 )}
 
@@ -515,7 +515,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           pattern="\d*"
           value={pin}
           onChange={handlePinChange}
-          className="opacity-0 absolute -left-[9999px]"
+          className="opacity-0 absolute -left-2499.75"
           maxLength={4}
           autoComplete="off"
           disabled={isAuthorized}
