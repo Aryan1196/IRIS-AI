@@ -20,7 +20,6 @@ export default function LoginPage() {
     window.open(`${import.meta.env.VITE_BACKEND_KEY}/users/google`, '_blank')
   }
 
-  // OS Boot Sequence Simulation
   useEffect(() => {
     const sequence = [
       'SYS_BOOT: INITIATING KERNEL...',
@@ -75,11 +74,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-emerald-50 font-sans flex items-center justify-center p-4 lg:p-8 relative overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-100">
-      {/* Ambient Dark Neon Glows */}
       <div className="absolute top-[-10%] left-[-5%] w-125 h-125 bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-5%] w-125 h-125 bg-cyan-900/10 blur-[150px] rounded-full pointer-events-none" />
 
-      {/* Cybernetic Grid Background */}
       <div className="absolute inset-0 bg-[linear-linear(to_right,#10b98105_1px,transparent_1px),linear-linear(to_bottom,#10b98105_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none mix-blend-screen" />
 
       <motion.div
@@ -88,7 +85,6 @@ export default function LoginPage() {
         animate="show"
         className="w-full max-w-7xl relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
       >
-        {/* LEFT PANEL: Live Terminal (Hidden on small screens) */}
         <motion.div
           variants={panelVariants}
           className="hidden lg:flex col-span-3 flex-col h-125 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-2xl relative overflow-hidden"
@@ -124,15 +120,12 @@ export default function LoginPage() {
           </div>
         </motion.div>
 
-        {/* CENTER PANEL: Main Auth Card */}
         <motion.div
           variants={cardVariants}
           className="col-span-1 lg:col-span-6 flex flex-col items-center justify-center"
         >
-          {/* Top Logo & Title */}
           <div className="text-center mb-10 flex flex-col items-center">
             <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-black border border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.15)] mb-6 overflow-hidden">
-              {/* Laser Scan Effect */}
               <motion.div
                 className="absolute left-0 w-full h-0.5 bg-emerald-400 shadow-[0_0_15px_#34d399]"
                 animate={{ top: ['-10%', '110%', '-10%'] }}
@@ -149,7 +142,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Login Box */}
           <div className="w-full max-w-md bg-black/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative">
             <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-emerald-500 to-transparent opacity-40" />
 
@@ -181,7 +173,6 @@ export default function LoginPage() {
           </div>
         </motion.div>
 
-        {/* RIGHT PANEL: System Status (Hidden on small screens) */}
         <motion.div
           variants={rightPanelVariants}
           className="hidden lg:flex col-span-3 flex-col h-125 bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl p-5 shadow-2xl"
