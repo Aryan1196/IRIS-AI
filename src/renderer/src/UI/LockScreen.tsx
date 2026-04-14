@@ -73,9 +73,10 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        await videoRef.current.play().catch(() => {})
+        await videoRef.current.play().catch((e) => console.warn('Autoplay prevented:', e))
       }
     } catch (err) {
+      console.error('Camera Hardware Error:', err)
       setAiStatus('CAMERA HARDWARE OFFLINE - USE PIN')
     }
   }
@@ -159,6 +160,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           if (!isFaceMatched && !error) setAiStatus('NO FACE IN FRAME. ALIGN CENTER.')
         }
       } catch (scanErr) {
+        console.error('Scan error:', scanErr)
       }
     }, 800)
   }
