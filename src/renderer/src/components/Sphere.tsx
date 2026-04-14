@@ -83,12 +83,12 @@ const CustomParticleSphere = ({ count = 3000 }) => {
       </bufferGeometry>
       <pointsMaterial
         color="#00F0FF"
-        size={0.012} // Slightly increased size to compensate for fewer particles
+        size={0.012}
         transparent={true}
         opacity={0.9}
         sizeAttenuation={true}
         blending={THREE.AdditiveBlending}
-        depthWrite={false} // OPTIMIZATION: Disabling depth write makes rendering transparent particles much cheaper
+        depthWrite={false}
       />
     </points>
   )
