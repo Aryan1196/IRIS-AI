@@ -1,5 +1,10 @@
 import { handleNavigation, handleOpenMap } from '@renderer/tools/Earth-View'
-import { floatTo16BitPCM, base64ToFloat32, downsampleTo16000, float32ToBase64PCM } from '../utils/audioUtils'
+import {
+  floatTo16BitPCM,
+  base64ToFloat32,
+  downsampleTo16000,
+  float32ToBase64PCM
+} from '../utils/audioUtils'
 import { getRunningApps } from './get-apps'
 import { getHistory, retrieveCoreMemory, saveCoreMemory, saveMessage } from './iris-ai-brain'
 import { getAllApps, getSystemStatus } from './system-info'
@@ -1266,248 +1271,248 @@ ${JSON.stringify(history)}
               let result
 
               if (call.name === 'index_directory') {
-              result = await runIndexDirectory(call.args.folder_path)
-            } else if (call.name === 'smart_file_search') {
-              result = await runSmartSearch(call.args.query)
-            } else if (call.name === 'read_file') {
-              result = await readFile(call.args.file_path)
-            } else if (call.name === 'write_file') {
-              result = await writeFile(call.args.file_name, call.args.content)
-            } else if (call.name === 'open_app') {
-              result = await openApp(call.args.app_name)
-            } else if (call.name === 'close_app') {
-              result = await closeApp(call.args.app_name)
-            } else if (call.name === 'manage_file') {
-              result = await manageFile(
-                call.args.operation,
-                call.args.source_path,
-                call.args.dest_path
-              )
-            } else if (call.name === 'open_file') {
-              result = await openFile(call.args.file_path)
-            } else if (call.name === 'read_directory') {
-              result = await readDirectory(call.args.directory_path)
-            } else if (call.name === 'save_note') {
-              result = await saveNote(call.args.title, call.args.content)
-            } else if (call.name === 'read_notes') {
-              result = await readSystemNotes()
-            } else if (call.name === 'google_search') {
-              result = await performWebSearch(call.args.query)
-            } else if (call.name === 'ghost_type') {
-              result = await ghostType(call.args.text)
-            } else if (call.name === 'execute_sequence') {
-              result = await executeGhostSequence(call.args.json_actions)
-            } else if (call.name === 'send_whatsapp') {
-              result = await sendWhatsAppMessage(
-                call.args.name,
-                call.args.message,
-                call.args.file_path
-              )
-            } else if (call.name === 'schedule_whatsapp') {
-              result = await scheduleWhatsAppMessage(
-                call.args.name,
-                call.args.message,
-                call.args.delay_minutes,
-                call.args.file_path
-              )
-            } else if (call.name === 'play_spotify_music') {
-              result = await playSpotifyMusic(call.args.song_name)
-            } else if (call.name === 'set_volume') {
-              result = await setVolume(call.args.level)
-            } else if (call.name === 'take_screenshot') {
-              result = await takeScreenshot()
-            } else if (call.name === 'click_on_screen') {
-              const { width, height } = await getScreenSize()
+                result = await runIndexDirectory(call.args.folder_path)
+              } else if (call.name === 'smart_file_search') {
+                result = await runSmartSearch(call.args.query)
+              } else if (call.name === 'read_file') {
+                result = await readFile(call.args.file_path)
+              } else if (call.name === 'write_file') {
+                result = await writeFile(call.args.file_name, call.args.content)
+              } else if (call.name === 'open_app') {
+                result = await openApp(call.args.app_name)
+              } else if (call.name === 'close_app') {
+                result = await closeApp(call.args.app_name)
+              } else if (call.name === 'manage_file') {
+                result = await manageFile(
+                  call.args.operation,
+                  call.args.source_path,
+                  call.args.dest_path
+                )
+              } else if (call.name === 'open_file') {
+                result = await openFile(call.args.file_path)
+              } else if (call.name === 'read_directory') {
+                result = await readDirectory(call.args.directory_path)
+              } else if (call.name === 'save_note') {
+                result = await saveNote(call.args.title, call.args.content)
+              } else if (call.name === 'read_notes') {
+                result = await readSystemNotes()
+              } else if (call.name === 'google_search') {
+                result = await performWebSearch(call.args.query)
+              } else if (call.name === 'ghost_type') {
+                result = await ghostType(call.args.text)
+              } else if (call.name === 'execute_sequence') {
+                result = await executeGhostSequence(call.args.json_actions)
+              } else if (call.name === 'send_whatsapp') {
+                result = await sendWhatsAppMessage(
+                  call.args.name,
+                  call.args.message,
+                  call.args.file_path
+                )
+              } else if (call.name === 'schedule_whatsapp') {
+                result = await scheduleWhatsAppMessage(
+                  call.args.name,
+                  call.args.message,
+                  call.args.delay_minutes,
+                  call.args.file_path
+                )
+              } else if (call.name === 'play_spotify_music') {
+                result = await playSpotifyMusic(call.args.song_name)
+              } else if (call.name === 'set_volume') {
+                result = await setVolume(call.args.level)
+              } else if (call.name === 'take_screenshot') {
+                result = await takeScreenshot()
+              } else if (call.name === 'click_on_screen') {
+                const { width, height } = await getScreenSize()
 
-              const normX = call.args.x
-              const normY = call.args.y
+                const normX = call.args.x
+                const normY = call.args.y
 
-              const realX = Math.round((normX / 1000) * width)
-              const realY = Math.round((normY / 1000) * height)
+                const realX = Math.round((normX / 1000) * width)
+                const realY = Math.round((normY / 1000) * height)
 
-              result = await clickOnCoordinate(realX, realY)
-            } else if (call.name === 'scroll_screen')
-              result = await scrollScreen(call.args.direction, call.args.amount)
-            else if (call.name === 'press_shortcut')
-              result = await pressShortcut(call.args.key, call.args.modifiers)
-            else if (call.name === 'activate_protocol') {
-              if (call.args.protocol_name === 'coding') {
-                result = await activateCodingMode()
-              } else {
-                result = 'Error: Unknown protocol.'
-              }
-            } else if (call.name === 'run_terminal') {
-              result = await runTerminal(call.args.command, call.args.path)
-            } else if (call.name === 'create_folder') {
-              result = await createFolder(call.args.folder_path)
-            } else if (call.name === 'open_project') {
-              result = await openInVsCode(call.args.folder_path)
-            } else if (call.name === 'open_map') {
-              result = await handleOpenMap(call.args.location)
-            } else if (call.name === 'get_navigation') {
-              result = await handleNavigation(call.args.origin, call.args.destination)
-            } else if (call.name === 'generate_image') {
-              result = await handleImageGeneration(call.args.prompt)
-            } else if (call.name === 'read_gallery') {
-              result = await readGalleryImages()
-            } else if (call.name === 'analyze_direct_photo') {
-              result = await analyzeDirectPhoto(call.args.file_path, this.socket)
-            } else if (call.name === 'read_emails') {
-              result = await readEmails(call.args.max_results || 5)
-            } else if (call.name === 'send_email') {
-              result = await sendEmail(call.args.to, call.args.subject, call.args.body)
-            } else if (call.name === 'draft_email') {
-              result = await draftEmail(call.args.to, call.args.subject, call.args.body)
-            } else if (call.name === 'get_weather') {
-              result = await fetchWeather(call.args.location)
-            } else if (call.name === 'get_stock_price') {
-              result = await fetchStockData(call.args.ticker)
-            } else if (call.name === 'compare_stocks') {
-              result = await compareStocks(call.args.ticker1, call.args.ticker2)
-            } else if (call.name === 'open_mobile_app') {
-              result = await openMobileApp(call.args.package_name)
-            } else if (call.name === 'close_mobile_app') {
-              result = await closeMobileApp(call.args.package_name)
-            } else if (call.name === 'tap_mobile_screen') {
-              result = await tapMobileScreen(call.args.x_percent, call.args.y_percent)
-            } else if (call.name === 'swipe_mobile_screen') {
-              result = await swipeMobileScreen(call.args.direction)
-            } else if (call.name === 'get_mobile_info') {
-              result = await fetchMobileInfo()
-            } else if (call.name === 'get_mobile_notifications') {
-              result = await fetchMobileNotifications()
-            } else if (call.name === 'push_file_to_mobile') {
-              result = await pushFileToMobile(call.args.source_path, call.args.dest_path)
-            } else if (call.name === 'pull_file_from_mobile') {
-              result = await pullFileFromMobile(call.args.source_path, call.args.dest_path)
-            } else if (call.name === 'toggle_mobile_hardware') {
-              result = await toggleMobileHardware(call.args.setting, call.args.state)
-            } else if (call.name === 'hack_live_website') {
-              result = await executeRealityHack(
-                call.args.url,
-                call.args.mode,
-                call.args.custom_text
-              )
-            } else if (call.name === 'build_file') {
-              window.dispatchEvent(
-                new CustomEvent('ai-start-coding', {
-                  detail: { file_name: call.args.file_name, prompt: call.args.prompt }
-                })
-              )
-              result = `✅ I am streaming the code for ${call.args.file_name} to the screen now.`
-            } else if (call.name === 'open_in_vscode') {
-              window.dispatchEvent(new CustomEvent('ai-open-vscode'))
-              result = '✅ Opening Visual Studio Code.'
-            } else if (call.name === 'teleport_windows') {
-              await window.electron.ipcRenderer.invoke('teleport-windows', call.args.commands)
-              result = '✅ I have restructured the desktop windows, Boss.'
-            } else if (call.name === 'save_core_memory') {
-              result = await saveCoreMemory(call.args.fact)
-            } else if (call.name === 'retrieve_core_memory') {
-              result = await retrieveCoreMemory()
-            } else if (call.name === 'deploy_wormhole') {
-              result = await deployWormhole(call.args.port)
-            } else if (call.name === 'close_wormhole') {
-              result = await closeWormhole()
-            } else if (call.name === 'ingest_codebase') {
-              result = await ingestCodebase(call.args.dirPath)
-            } else if (call.name === 'consult_oracle') {
-              result = await consultOracle(call.args.query)
-            } else if (call.name === 'ingest_codebase') {
-              result = await ingestCodebase(call.args.dirPath)
-            } else if (call.name === 'consult_oracle') {
-              result = await consultOracle(call.args.query)
-            } else if (call.name === 'deep_research') {
-              result = await runDeepResearch(call.args.query)
-            } else if (call.name === 'create_widget') {
-              result = await createWidget(call.args.html_code, call.args.width, call.args.height)
-            } else if (call.name === 'close_widgets') {
-              result = await closeWidgets()
-            } else if (call.name === 'build_animated_website') {
-              result = await buildAnimatedWebsite(call.args.prompt)
-            } else if (call.name === 'execute_macro') {
-              const macroRes = await getMacroSequence(call.args.macro_name)
-
-              if (!macroRes.success) {
-                result = macroRes.error
-              } else {
-                for (const step of macroRes.steps) {
-                  try {
-                    if (step.tool === 'WAIT') {
-                      await new Promise((resolve) =>
-                        setTimeout(resolve, Number(step.args.milliseconds) || 1000)
-                      )
-                    } else if (step.tool === 'set_volume') {
-                      await setVolume(Number(step.args.level))
-                    } else if (step.tool === 'open_app') {
-                      await openApp(step.args.app_name)
-                    } else if (step.tool === 'close_app') {
-                      await closeApp(step.args.app_name)
-                    } else if (step.tool === 'send_whatsapp') {
-                      await sendWhatsAppMessage(
-                        step.args.name,
-                        step.args.message,
-                        step.args.file_path
-                      )
-                    } else if (step.tool === 'schedule_whatsapp') {
-                      await scheduleWhatsAppMessage(
-                        step.args.name,
-                        step.args.message,
-                        Number(step.args.delay_minutes),
-                        step.args.file_path
-                      )
-                    } else if (step.tool === 'google_search') {
-                      await performWebSearch(step.args.query)
-                    } else if (step.tool === 'run_terminal') {
-                      await runTerminal(step.args.command, step.args.path)
-                    } else if (step.tool === 'ghost_type') {
-                      await ghostType(step.args.text)
-                    } else if (step.tool === 'send_email') {
-                      await sendEmail(step.args.to, step.args.subject, step.args.body)
-                    } else if (step.tool === 'draft_email') {
-                      await draftEmail(step.args.to, step.args.subject, step.args.body)
-                    } else if (step.tool === 'read_emails') {
-                      await readEmails(Number(step.args.max_results) || 5)
-                    } else if (step.tool === 'deploy_wormhole') {
-                      await window.electron.ipcRenderer.invoke(
-                        'deploy-wormhole',
-                        Number(step.args.port)
-                      )
-                    } else if (step.tool === 'close_wormhole') {
-                      await window.electron.ipcRenderer.invoke('close-wormhole')
-                    } else if (step.tool === 'click_on_screen') {
-                      await clickOnCoordinate(Number(step.args.x), Number(step.args.y))
-                    } else if (step.tool === 'scroll_screen') {
-                      await scrollScreen(step.args.direction, Number(step.args.amount))
-                    } else if (step.tool === 'press_shortcut') {
-                      await pressShortcut(step.args.key, step.args.modifiers)
-                    } else if (step.tool === 'take_screenshot') {
-                      await takeScreenshot()
-                    }
-                  } catch (stepError) {
-                    break
-                  }
+                result = await clickOnCoordinate(realX, realY)
+              } else if (call.name === 'scroll_screen')
+                result = await scrollScreen(call.args.direction, call.args.amount)
+              else if (call.name === 'press_shortcut')
+                result = await pressShortcut(call.args.key, call.args.modifiers)
+              else if (call.name === 'activate_protocol') {
+                if (call.args.protocol_name === 'coding') {
+                  result = await activateCodingMode()
+                } else {
+                  result = 'Error: Unknown protocol.'
                 }
+              } else if (call.name === 'run_terminal') {
+                result = await runTerminal(call.args.command, call.args.path)
+              } else if (call.name === 'create_folder') {
+                result = await createFolder(call.args.folder_path)
+              } else if (call.name === 'open_project') {
+                result = await openInVsCode(call.args.folder_path)
+              } else if (call.name === 'open_map') {
+                result = await handleOpenMap(call.args.location)
+              } else if (call.name === 'get_navigation') {
+                result = await handleNavigation(call.args.origin, call.args.destination)
+              } else if (call.name === 'generate_image') {
+                result = await handleImageGeneration(call.args.prompt)
+              } else if (call.name === 'read_gallery') {
+                result = await readGalleryImages()
+              } else if (call.name === 'analyze_direct_photo') {
+                result = await analyzeDirectPhoto(call.args.file_path, this.socket)
+              } else if (call.name === 'read_emails') {
+                result = await readEmails(call.args.max_results || 5)
+              } else if (call.name === 'send_email') {
+                result = await sendEmail(call.args.to, call.args.subject, call.args.body)
+              } else if (call.name === 'draft_email') {
+                result = await draftEmail(call.args.to, call.args.subject, call.args.body)
+              } else if (call.name === 'get_weather') {
+                result = await fetchWeather(call.args.location)
+              } else if (call.name === 'get_stock_price') {
+                result = await fetchStockData(call.args.ticker)
+              } else if (call.name === 'compare_stocks') {
+                result = await compareStocks(call.args.ticker1, call.args.ticker2)
+              } else if (call.name === 'open_mobile_app') {
+                result = await openMobileApp(call.args.package_name)
+              } else if (call.name === 'close_mobile_app') {
+                result = await closeMobileApp(call.args.package_name)
+              } else if (call.name === 'tap_mobile_screen') {
+                result = await tapMobileScreen(call.args.x_percent, call.args.y_percent)
+              } else if (call.name === 'swipe_mobile_screen') {
+                result = await swipeMobileScreen(call.args.direction)
+              } else if (call.name === 'get_mobile_info') {
+                result = await fetchMobileInfo()
+              } else if (call.name === 'get_mobile_notifications') {
+                result = await fetchMobileNotifications()
+              } else if (call.name === 'push_file_to_mobile') {
+                result = await pushFileToMobile(call.args.source_path, call.args.dest_path)
+              } else if (call.name === 'pull_file_from_mobile') {
+                result = await pullFileFromMobile(call.args.source_path, call.args.dest_path)
+              } else if (call.name === 'toggle_mobile_hardware') {
+                result = await toggleMobileHardware(call.args.setting, call.args.state)
+              } else if (call.name === 'hack_live_website') {
+                result = await executeRealityHack(
+                  call.args.url,
+                  call.args.mode,
+                  call.args.custom_text
+                )
+              } else if (call.name === 'build_file') {
+                window.dispatchEvent(
+                  new CustomEvent('ai-start-coding', {
+                    detail: { file_name: call.args.file_name, prompt: call.args.prompt }
+                  })
+                )
+                result = `✅ I am streaming the code for ${call.args.file_name} to the screen now.`
+              } else if (call.name === 'open_in_vscode') {
+                window.dispatchEvent(new CustomEvent('ai-open-vscode'))
+                result = '✅ Opening Visual Studio Code.'
+              } else if (call.name === 'teleport_windows') {
+                await window.electron.ipcRenderer.invoke('teleport-windows', call.args.commands)
+                result = '✅ I have restructured the desktop windows, Boss.'
+              } else if (call.name === 'save_core_memory') {
+                result = await saveCoreMemory(call.args.fact)
+              } else if (call.name === 'retrieve_core_memory') {
+                result = await retrieveCoreMemory()
+              } else if (call.name === 'deploy_wormhole') {
+                result = await deployWormhole(call.args.port)
+              } else if (call.name === 'close_wormhole') {
+                result = await closeWormhole()
+              } else if (call.name === 'ingest_codebase') {
+                result = await ingestCodebase(call.args.dirPath)
+              } else if (call.name === 'consult_oracle') {
+                result = await consultOracle(call.args.query)
+              } else if (call.name === 'ingest_codebase') {
+                result = await ingestCodebase(call.args.dirPath)
+              } else if (call.name === 'consult_oracle') {
+                result = await consultOracle(call.args.query)
+              } else if (call.name === 'deep_research') {
+                result = await runDeepResearch(call.args.query)
+              } else if (call.name === 'create_widget') {
+                result = await createWidget(call.args.html_code, call.args.width, call.args.height)
+              } else if (call.name === 'close_widgets') {
+                result = await closeWidgets()
+              } else if (call.name === 'build_animated_website') {
+                result = await buildAnimatedWebsite(call.args.prompt)
+              } else if (call.name === 'execute_macro') {
+                const macroRes = await getMacroSequence(call.args.macro_name)
 
-                result = `[SYSTEM OVERRIDE] Macro "${macroRes.name}" has been successfully executed natively by the system architecture. Confirm execution with the user briefly.`
+                if (!macroRes.success) {
+                  result = macroRes.error
+                } else {
+                  for (const step of macroRes.steps) {
+                    try {
+                      if (step.tool === 'WAIT') {
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, Number(step.args.milliseconds) || 1000)
+                        )
+                      } else if (step.tool === 'set_volume') {
+                        await setVolume(Number(step.args.level))
+                      } else if (step.tool === 'open_app') {
+                        await openApp(step.args.app_name)
+                      } else if (step.tool === 'close_app') {
+                        await closeApp(step.args.app_name)
+                      } else if (step.tool === 'send_whatsapp') {
+                        await sendWhatsAppMessage(
+                          step.args.name,
+                          step.args.message,
+                          step.args.file_path
+                        )
+                      } else if (step.tool === 'schedule_whatsapp') {
+                        await scheduleWhatsAppMessage(
+                          step.args.name,
+                          step.args.message,
+                          Number(step.args.delay_minutes),
+                          step.args.file_path
+                        )
+                      } else if (step.tool === 'google_search') {
+                        await performWebSearch(step.args.query)
+                      } else if (step.tool === 'run_terminal') {
+                        await runTerminal(step.args.command, step.args.path)
+                      } else if (step.tool === 'ghost_type') {
+                        await ghostType(step.args.text)
+                      } else if (step.tool === 'send_email') {
+                        await sendEmail(step.args.to, step.args.subject, step.args.body)
+                      } else if (step.tool === 'draft_email') {
+                        await draftEmail(step.args.to, step.args.subject, step.args.body)
+                      } else if (step.tool === 'read_emails') {
+                        await readEmails(Number(step.args.max_results) || 5)
+                      } else if (step.tool === 'deploy_wormhole') {
+                        await window.electron.ipcRenderer.invoke(
+                          'deploy-wormhole',
+                          Number(step.args.port)
+                        )
+                      } else if (step.tool === 'close_wormhole') {
+                        await window.electron.ipcRenderer.invoke('close-wormhole')
+                      } else if (step.tool === 'click_on_screen') {
+                        await clickOnCoordinate(Number(step.args.x), Number(step.args.y))
+                      } else if (step.tool === 'scroll_screen') {
+                        await scrollScreen(step.args.direction, Number(step.args.amount))
+                      } else if (step.tool === 'press_shortcut') {
+                        await pressShortcut(step.args.key, step.args.modifiers)
+                      } else if (step.tool === 'take_screenshot') {
+                        await takeScreenshot()
+                      }
+                    } catch (stepError) {
+                      break
+                    }
+                  }
+
+                  result = `[SYSTEM OVERRIDE] Macro "${macroRes.name}" has been successfully executed natively by the system architecture. Confirm execution with the user briefly.`
+                }
+              } else if (call.name === 'smart_drop_zones') {
+                result = await executeSmartDropZones(
+                  call.args.base_directory,
+                  call.args.files_to_sort
+                )
+              } else if (call.name === 'lock_system_vault') {
+                result = await executeLockSystem()
+              } else {
+                result = 'Error: Tool not found.'
               }
-            } else if (call.name === 'smart_drop_zones') {
-              result = await executeSmartDropZones(
-                call.args.base_directory,
-                call.args.files_to_sort
-              )
-            } else if (call.name === 'lock_system_vault') {
-              result = await executeLockSystem()
-            } else {
-              result = 'Error: Tool not found.'
-            }
 
-            functionResponses.push({
-              id: call.id,
-              name: call.name,
-              response: { result: { output: result } }
+              functionResponses.push({
+                id: call.id,
+                name: call.name,
+                response: { result: { output: result } }
+              })
             })
-          })
           )
 
           const responseMsg = {
@@ -1594,9 +1599,6 @@ ${JSON.stringify(history)}
       })
 
       const source = this.audioContext.createMediaStreamSource(this.mediaStream)
-      // CRITICAL FIX: AudioWorklet ALWAYS runs at the AudioContext's true hardware sample rate!
-      // The track's setting might say 16000, but the Worklet will output 48000Hz.
-      // This was causing our system to send 3x stretched audio, creating endless stacking latency.
       const inputSampleRate = this.audioContext.sampleRate
 
       this.workletNode = new AudioWorkletNode(this.audioContext, 'pcm-processor')
@@ -1608,8 +1610,6 @@ ${JSON.stringify(history)}
         this.rawAudioBuffer.push(inputData)
         this.rawAudioBufferLength += inputData.length
 
-        // We want exactly 4096 samples (256ms) of 16kHz audio sent to Gemini per packet.
-        // Convert that to how many hardware samples we need to wait for before processing.
         const requiredRawSamples = Math.floor(4096 * (inputSampleRate / 16000))
 
         if (this.rawAudioBufferLength >= requiredRawSamples) {
