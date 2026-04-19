@@ -236,7 +236,8 @@ export default function DashboardView({
       glowClass: 'via-emerald-500/50',
       shadowClass: 'shadow-[0_0_8px_#10b981]',
       bgGradient: 'from-emerald-950/20 to-black/60',
-      pattern: 'bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
+      pattern:
+        'bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
     },
     {
       icon: <FaMemory />,
@@ -262,7 +263,8 @@ export default function DashboardView({
       glowClass: 'via-orange-500/50',
       shadowClass: 'shadow-[0_0_8px_#f97316]',
       bgGradient: 'from-orange-950/20 to-black/60',
-      pattern: 'bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent'
+      pattern:
+        'bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent'
     },
     {
       icon: <HiComputerDesktop />,
@@ -275,7 +277,8 @@ export default function DashboardView({
       glowClass: 'via-purple-500/50',
       shadowClass: '',
       bgGradient: 'from-purple-950/20 to-black/60',
-      pattern: 'bg-[linear-gradient(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
+      pattern:
+        'bg-[linear-gradient(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
       hideBar: true
     }
   ]
@@ -424,32 +427,38 @@ export default function DashboardView({
                 className={`relative rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300 bg-gradient-to-br ${m.bgGradient}`}
               >
                 {/* 1. Subtle Themed Pattern Overlay */}
-                <div className={`absolute inset-0 ${m.pattern} opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`} />
+                <div
+                  className={`absolute inset-0 ${m.pattern} opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`}
+                />
 
                 {/* 2. Massive Faded Background Icon */}
-                <div className={`absolute -bottom-8 -right-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-500 transform group-hover:scale-110 pointer-events-none ${m.colorClass}`}>
+                <div
+                  className={`absolute -bottom-8 -right-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-500 transform group-hover:scale-110 pointer-events-none ${m.colorClass}`}
+                >
                   {m.bgIcon}
                 </div>
 
                 {/* 3. Subtle Hover Laser Glow Top Edge */}
-                <div 
-                  className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} 
+                <div
+                  className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                 />
 
                 <div className="relative z-10 flex justify-between items-start text-zinc-500">
-                  <span className={`text-base ${m.colorClass} opacity-70 group-hover:opacity-100 transition-opacity`}>
+                  <span
+                    className={`text-base ${m.colorClass} opacity-70 group-hover:opacity-100 transition-opacity`}
+                  >
                     {m.icon}
                   </span>
                   <span className="text-[8px] font-mono tracking-widest uppercase opacity-70 group-hover:opacity-100 transition-opacity text-zinc-300">
                     {m.label}
                   </span>
                 </div>
-                
+
                 <div className="relative z-10 flex flex-col gap-1.5 mt-2">
                   <span className="text-sm font-bold text-white text-right font-mono tracking-wider drop-shadow-md">
                     {m.val}
                   </span>
-                  
+
                   {/* Dynamic Hardware Bar */}
                   {!m.hideBar && (
                     <div className="w-full h-1 bg-black/40 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
