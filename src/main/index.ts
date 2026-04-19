@@ -185,14 +185,12 @@ app.whenReady().then(() => {
         buttons: ['Execute Restart']
       })
       .then(() => {
-        // FORCE KILL: Prevent background tasks from aborting the update install
         setImmediate(() => {
           app.removeAllListeners('window-all-closed')
           autoUpdater.quitAndInstall(false, true)
         })
       })
   })
-  // -----------------------------------
 
   // --- UPGRADED HARDWARE PERMISSIONS ---
   session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
