@@ -413,7 +413,6 @@ export default function DashboardView({
           </div>
         </div>
 
-        {/* --- UPGRADED CORE METRICS UI --- */}
         <div className={`${glassPanel} flex-1 p-4 flex flex-col gap-3`}>
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="text-[10px] font-bold tracking-widest text-zinc-400">
@@ -426,19 +425,16 @@ export default function DashboardView({
                 key={i}
                 className={`relative rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300 bg-gradient-to-br ${m.bgGradient}`}
               >
-                {/* 1. Subtle Themed Pattern Overlay */}
                 <div
                   className={`absolute inset-0 ${m.pattern} opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`}
                 />
 
-                {/* 2. Massive Faded Background Icon */}
                 <div
                   className={`absolute -bottom-8 -right-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-500 transform group-hover:scale-110 pointer-events-none ${m.colorClass}`}
                 >
                   {m.bgIcon}
                 </div>
 
-                {/* 3. Subtle Hover Laser Glow Top Edge */}
                 <div
                   className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                 />
@@ -459,7 +455,6 @@ export default function DashboardView({
                     {m.val}
                   </span>
 
-                  {/* Dynamic Hardware Bar */}
                   {!m.hideBar && (
                     <div className="w-full h-1 bg-black/40 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
                       <div
