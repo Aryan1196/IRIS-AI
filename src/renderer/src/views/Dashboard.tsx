@@ -234,7 +234,7 @@ export default function DashboardView({
       bgClass: 'bg-emerald-500',
       glowClass: 'via-emerald-500/50',
       shadowClass: 'shadow-[0_0_8px_#10b981]',
-      bgGradient: 'from-emerald-950/20 to-black/60',
+      bgGradient: 'from-emerald-950/30 to-black/60',
       pattern:
         'bg-[linear-linear(to_right,#10b98108_1px,transparent_1px),linear-linear(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
     },
@@ -248,7 +248,7 @@ export default function DashboardView({
       bgClass: 'bg-cyan-500',
       glowClass: 'via-cyan-500/50',
       shadowClass: 'shadow-[0_0_8px_#06b6d4]',
-      bgGradient: 'from-cyan-950/20 to-black/60',
+      bgGradient: 'from-cyan-950/30 to-black/60',
       pattern: 'bg-[radial-linear(#06b6d415_1px,transparent_1px)] bg-[size:10px_10px]'
     },
     {
@@ -261,7 +261,7 @@ export default function DashboardView({
       bgClass: 'bg-orange-500',
       glowClass: 'via-orange-500/50',
       shadowClass: 'shadow-[0_0_8px_#f97316]',
-      bgGradient: 'from-orange-950/20 to-black/60',
+      bgGradient: 'from-orange-950/30 to-black/60',
       pattern:
         'bg-[radial-linear(ellipse_at_top_right,_var(--tw-linear-stops))] from-orange-900/20 via-transparent to-transparent'
     },
@@ -275,7 +275,7 @@ export default function DashboardView({
       bgClass: 'bg-purple-500',
       glowClass: 'via-purple-500/50',
       shadowClass: '',
-      bgGradient: 'from-purple-950/20 to-black/60',
+      bgGradient: 'from-purple-950/30 to-black/60',
       pattern:
         'bg-[linear-linear(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
       hideBar: true
