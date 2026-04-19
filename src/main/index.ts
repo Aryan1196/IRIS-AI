@@ -219,7 +219,6 @@ app.whenReady().then(() => {
     ]
     return allowedPermissions.includes(permission)
   })
-  // -----------------------------------
 
   if (process.platform === 'darwin') {
     if (systemPreferences.getMediaAccessStatus('microphone') !== 'granted') {
