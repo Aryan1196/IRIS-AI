@@ -93,7 +93,7 @@ export default function DashboardView({
   useEffect(() => {
     const loadModels = async () => {
       try {
-        const MODEL_URL = '/models'
+        const MODEL_URL = './models' // Ensuring the prod fix is here
         await Promise.all([
           faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
           faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
@@ -223,39 +223,50 @@ export default function DashboardView({
     startVision(nextMode)
   }
 
+  // --- UPGRADED SYSTEM METRICS WITH BACKGROUND DATA ---
   const systemMetrics = [
     {
       icon: <RiCpuLine />,
+      bgIcon: <RiCpuLine size={140} />, // Giant background icon
       label: 'CPU LOAD',
       val: isSystemActive && stats ? `${stats.cpu}%` : '--',
       raw: isSystemActive && stats ? stats.cpu : 0,
       colorClass: 'text-emerald-400',
       bgClass: 'bg-emerald-500',
       glowClass: 'via-emerald-500/50',
-      shadowClass: 'shadow-[0_0_8px_#10b981]'
+      shadowClass: 'shadow-[0_0_8px_#10b981]',
+      bgGradient: 'from-emerald-950/20 to-black/60',
+      pattern: 'bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
     },
     {
       icon: <FaMemory />,
+      bgIcon: <FaMemory size={140} />,
       label: 'RAM USAGE',
       val: isSystemActive && stats ? `${stats.memory.usedPercentage}%` : '--',
       raw: isSystemActive && stats ? stats.memory.usedPercentage : 0,
       colorClass: 'text-cyan-400',
       bgClass: 'bg-cyan-500',
       glowClass: 'via-cyan-500/50',
-      shadowClass: 'shadow-[0_0_8px_#06b6d4]'
+      shadowClass: 'shadow-[0_0_8px_#06b6d4]',
+      bgGradient: 'from-cyan-950/20 to-black/60',
+      pattern: 'bg-[radial-gradient(#06b6d415_1px,transparent_1px)] bg-[size:10px_10px]'
     },
     {
       icon: <GiTinker />,
+      bgIcon: <GiTinker size={140} />,
       label: 'TEMP',
       val: isSystemActive && stats ? `${stats.temperature}°C` : '--',
       raw: isSystemActive && stats ? Math.min((stats.temperature / 90) * 100, 100) : 0,
       colorClass: 'text-orange-400',
       bgClass: 'bg-orange-500',
       glowClass: 'via-orange-500/50',
-      shadowClass: 'shadow-[0_0_8px_#f97316]'
+      shadowClass: 'shadow-[0_0_8px_#f97316]',
+      bgGradient: 'from-orange-950/20 to-black/60',
+      pattern: 'bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent'
     },
     {
       icon: <HiComputerDesktop />,
+      bgIcon: <HiComputerDesktop size={140} />,
       label: 'OS',
       val: isSystemActive && stats ? `${stats.os.type}` : '--',
       raw: 0,
@@ -263,6 +274,8 @@ export default function DashboardView({
       bgClass: 'bg-purple-500',
       glowClass: 'via-purple-500/50',
       shadowClass: '',
+      bgGradient: 'from-purple-950/20 to-black/60',
+      pattern: 'bg-[linear-gradient(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
       hideBar: true
     }
   ]
@@ -327,7 +340,7 @@ export default function DashboardView({
           className={`${glassPanel} h-32 shrink-0 p-4 flex flex-col justify-between relative overflow-hidden`}
         >
           <div
-            className={`absolute inset-0 bg-linear-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
           />
 
           <div className="flex items-center justify-between border-b border-white/10 pb-2 relative z-10">
@@ -397,6 +410,7 @@ export default function DashboardView({
           </div>
         </div>
 
+        {/* --- UPGRADED CORE METRICS UI --- */}
         <div className={`${glassPanel} flex-1 p-4 flex flex-col gap-3`}>
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="text-[10px] font-bold tracking-widest text-zinc-400">
@@ -407,30 +421,38 @@ export default function DashboardView({
             {systemMetrics.map((m, i) => (
               <div
                 key={i}
-                className="relative bg-black/40 rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300"
+                className={`relative rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300 bg-gradient-to-br ${m.bgGradient}`}
               >
-                <div
-                  className={`absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                {/* 1. Subtle Themed Pattern Overlay */}
+                <div className={`absolute inset-0 ${m.pattern} opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`} />
+
+                {/* 2. Massive Faded Background Icon */}
+                <div className={`absolute -bottom-8 -right-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-500 transform group-hover:scale-110 pointer-events-none ${m.colorClass}`}>
+                  {m.bgIcon}
+                </div>
+
+                {/* 3. Subtle Hover Laser Glow Top Edge */}
+                <div 
+                  className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} 
                 />
 
-                <div className="flex justify-between items-start text-zinc-500">
-                  <span
-                    className={`text-base ${m.colorClass} opacity-70 group-hover:opacity-100 transition-opacity`}
-                  >
+                <div className="relative z-10 flex justify-between items-start text-zinc-500">
+                  <span className={`text-base ${m.colorClass} opacity-70 group-hover:opacity-100 transition-opacity`}>
                     {m.icon}
                   </span>
-                  <span className="text-[8px] font-mono tracking-widest uppercase opacity-70">
+                  <span className="text-[8px] font-mono tracking-widest uppercase opacity-70 group-hover:opacity-100 transition-opacity text-zinc-300">
                     {m.label}
                   </span>
                 </div>
-
-                <div className="flex flex-col gap-1.5 mt-2">
+                
+                <div className="relative z-10 flex flex-col gap-1.5 mt-2">
                   <span className="text-sm font-bold text-white text-right font-mono tracking-wider drop-shadow-md">
                     {m.val}
                   </span>
-
+                  
+                  {/* Dynamic Hardware Bar */}
                   {!m.hideBar && (
-                    <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="w-full h-1 bg-black/40 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
                       <div
                         className={`h-full ${m.bgClass} ${m.shadowClass} transition-all duration-700 ease-out`}
                         style={{ width: isSystemActive ? `${m.raw}%` : '0%' }}
@@ -442,7 +464,6 @@ export default function DashboardView({
             ))}
           </div>
         </div>
-        {/* --- END OF UPGRADED SECTION --- */}
       </div>
 
       <div className="col-span-12 lg:col-span-6 relative flex flex-col items-center justify-center">
