@@ -236,7 +236,7 @@ export default function DashboardView({
       shadowClass: 'shadow-[0_0_8px_#10b981]',
       bgGradient: 'from-emerald-950/20 to-black/60',
       pattern:
-        'bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
+        'bg-[linear-linear(to_right,#10b98108_1px,transparent_1px),linear-linear(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:12px_12px]'
     },
     {
       icon: <FaMemory />,
@@ -249,7 +249,7 @@ export default function DashboardView({
       glowClass: 'via-cyan-500/50',
       shadowClass: 'shadow-[0_0_8px_#06b6d4]',
       bgGradient: 'from-cyan-950/20 to-black/60',
-      pattern: 'bg-[radial-gradient(#06b6d415_1px,transparent_1px)] bg-[size:10px_10px]'
+      pattern: 'bg-[radial-linear(#06b6d415_1px,transparent_1px)] bg-[size:10px_10px]'
     },
     {
       icon: <GiTinker />,
@@ -263,7 +263,7 @@ export default function DashboardView({
       shadowClass: 'shadow-[0_0_8px_#f97316]',
       bgGradient: 'from-orange-950/20 to-black/60',
       pattern:
-        'bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-900/20 via-transparent to-transparent'
+        'bg-[radial-linear(ellipse_at_top_right,_var(--tw-linear-stops))] from-orange-900/20 via-transparent to-transparent'
     },
     {
       icon: <HiComputerDesktop />,
@@ -277,7 +277,7 @@ export default function DashboardView({
       shadowClass: '',
       bgGradient: 'from-purple-950/20 to-black/60',
       pattern:
-        'bg-[linear-gradient(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
+        'bg-[linear-linear(45deg,#a855f708_25%,transparent_25%,transparent_50%,#a855f708_50%,#a855f708_75%,transparent_75%,transparent)] bg-[size:24px_24px]',
       hideBar: true
     }
   ]
@@ -342,7 +342,7 @@ export default function DashboardView({
           className={`${glassPanel} h-32 shrink-0 p-4 flex flex-col justify-between relative overflow-hidden`}
         >
           <div
-            className={`absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 bg-linear-to-r from-emerald-500/5 to-transparent transition-opacity duration-1000 ${isSystemActive ? 'opacity-100' : 'opacity-0'}`}
           />
 
           <div className="flex items-center justify-between border-b border-white/10 pb-2 relative z-10">
@@ -422,7 +422,7 @@ export default function DashboardView({
             {systemMetrics.map((m, i) => (
               <div
                 key={i}
-                className={`relative rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300 bg-gradient-to-br ${m.bgGradient}`}
+                className={`relative rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300 bg-linear-to-br ${m.bgGradient}`}
               >
                 <div
                   className={`absolute inset-0 ${m.pattern} opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`}
@@ -435,7 +435,7 @@ export default function DashboardView({
                 </div>
 
                 <div
-                  className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                  className={`absolute top-0 left-0 w-full h-[1px] bg-linear-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                 />
 
                 <div className="relative z-10 flex justify-between items-start text-zinc-500">
