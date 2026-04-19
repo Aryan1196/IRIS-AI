@@ -223,7 +223,6 @@ export default function DashboardView({
     startVision(nextMode)
   }
 
-  // --- UPGRADED CORE METRICS LOGIC ---
   const systemMetrics = [
     {
       icon: <RiCpuLine />,
@@ -398,7 +397,6 @@ export default function DashboardView({
           </div>
         </div>
 
-        {/* --- UPGRADED CORE METRICS UI --- */}
         <div className={`${glassPanel} flex-1 p-4 flex flex-col gap-3`}>
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="text-[10px] font-bold tracking-widest text-zinc-400">
@@ -411,7 +409,6 @@ export default function DashboardView({
                 key={i}
                 className="relative bg-black/40 rounded-xl p-3 flex flex-col justify-between border border-white/5 overflow-hidden group hover:border-white/10 transition-all duration-300"
               >
-                {/* Subtle Hover Laser Glow */}
                 <div
                   className={`absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent ${m.glowClass} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                 />
@@ -432,7 +429,6 @@ export default function DashboardView({
                     {m.val}
                   </span>
 
-                  {/* Dynamic Hardware Bar */}
                   {!m.hideBar && (
                     <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                       <div
