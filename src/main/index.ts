@@ -156,7 +156,6 @@ function toggleOverlayMode() {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
-  // --- UPGRADED AUTO-UPDATER LOGIC ---
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.checkForUpdatesAndNotify()
