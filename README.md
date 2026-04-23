@@ -238,17 +238,7 @@ git clone https://github.com/201Harsh/IRIS-AI.git
 cd IRIS-AI
 ```
 
-### 2. Environment Setup
-
-```bash
-cp .env.example .env
-```
-
-Add your API keys.
-
----
-
-### 3. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
@@ -256,7 +246,7 @@ npm install
 
 ---
 
-### 4. Run Dev Server
+### 3. Run Dev Server
 
 ```bash
 npm run dev
