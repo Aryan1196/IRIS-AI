@@ -21,3 +21,4 @@ EXPOSE 3000
 EXPOSE 5000
 
 CMD ["concurrently", "\"cd client && npm start\"", "\"cd server && npm start\""]
+
