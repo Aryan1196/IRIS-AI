@@ -81,4 +81,3 @@ IRIS natively executes the following tools. When writing frontend logic, assume 
 2. **Always handle loading/error states.** A premium OS never shows a blank screen or a raw JavaScript error. Catch all promises and display cinematic error HUDs.
 3. **If you update main process logic**, remember to update the `preload` script if new variables need to be exposed.
 4. **Assume the user is a Power User / Creator.** Do not write overly cautious warning dialogues unless requested. Execute commands swiftly.
-
