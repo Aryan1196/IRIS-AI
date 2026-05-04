@@ -386,7 +386,7 @@ Use responsibly. The maintainers are not liable for misuse.
 # 👨‍💻 Architect
 
 **Harsh Pandey**  
-AI Systems Engineer
+AI Systems Engineer and Project Leader
 
 Instagram: [@201Harshs](https://www.instagram.com/201harshs/)
 GitHub: [@201Harsh](https://github.com/201Harsh)
